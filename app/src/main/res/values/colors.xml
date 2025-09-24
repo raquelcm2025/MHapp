@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="negro">#FF000000</color>
+    <color name="blanco">#FFFFFFFF</color>
+    <color name="gris">#928f98</color>
 
-    <color name="purple_main">#9C27B0</color>
-    <color name="purple_dark">#7B1FA2</color>
-    <color name="purple_light">#E1BEE7</color>
+    <color name="magenta">#9C27B0</color>
+    <color name="magenta_oscuro">#7B1FA2</color>
+    <color name="magenta_claro">#8c52ff</color>
 
-    <color name="blue_main">#03A9F4</color>
-    <color name="blue_dark">#0288D1</color>
-    <color name="blue_light">#B3E5FC</color>
+    <color name="azul">#6c7dfd</color>
+    <color name="azul_oscuro">#4646ff</color>
+    <color name="azul_claro">#6baafd</color>
 </resources>
