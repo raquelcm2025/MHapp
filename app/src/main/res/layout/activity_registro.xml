@@ -6,18 +6,52 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".RegistroActivity">
+
+    <ImageView
+        android:id="@+id/ivLogoInicio"
+        android:layout_width="104dp"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintDimensionRatio="3:2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Registro de nuevo usuario"
+        android:textColor="@color/magenta_oscuro"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
         android:layout_marginTop="16dp"/>
+
+
+    <EditText
+        android:id="@+id/etNombres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombres"
+        android:layout_below="@id/tvTitulo"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"/>
+
+    <EditText
+        android:id="@+id/etApellidos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Apellidos"
+        android:layout_below="@id/etNombres"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"/>
+
 
 
     <EditText
@@ -26,7 +60,7 @@
         android:layout_height="wrap_content"
         android:hint="Correo"
         android:inputType="textEmailAddress"
-        android:layout_below="@id/etNombre"
+        android:layout_below="@id/etApellidos"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"/>
 
@@ -40,34 +74,12 @@
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"/>
 
-
-    <EditText
-        android:id="@+id/etNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nombre Completo"
-        android:layout_below="@id/chkTerminos"
-        android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="16dp"/>
-
-
-    <Button
-        android:id="@+id/btnRegistrar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Registrar"
-        android:layout_below="@id/etClave"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="16dp"/>
-
-
-
     <RadioGroup
         android:id="@+id/rgSexo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/tvTitulo"
+        android:layout_below="@id/etClave"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp">
 
@@ -89,14 +101,29 @@
             android:layout_weight="1"
             android:text="Prefiero no decirlo"/>
     </RadioGroup>
-    <CheckBox
-        android:id="@+id/chkTerminos"
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/swTerminos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Acepto los términos y condiciones y la política de privacidad de Cibertec"
+        android:text="Acepto la política de privacidad y los términos y condiciones de MyHobbiesApp"
         android:layout_below="@id/rgSexo"
+
         android:layout_marginTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:drawablePadding="16dp"
+        app:switchPadding="8dp"/>
+
+    <Button
+        android:id="@+id/btnRegistrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:layout_below="@id/swTerminos"
+        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"/>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="56dp"

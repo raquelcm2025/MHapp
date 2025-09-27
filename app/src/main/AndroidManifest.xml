@@ -10,6 +10,10 @@
         android:theme="@style/Theme.MyHobbiesApp">
 
         <activity
+            android:name=".ListaHobbiesActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".RegistroActivity"
             android:exported="false" />
 
