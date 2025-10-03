@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MyHobbies.TextFields" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/gris</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="hintTextColor">@color/gris_azulado</item>
+        <item name="android:textColor">@color/negro</item>
+        <item name="colorControlActivated">@color/magenta_oscuro</item>
+    </style>
+
+    <style name="Theme.MyHobbies.ButtonPrimary" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:backgroundTint">@color/magenta_oscuro</item>
+        <item name="android:textColor">@color/blanco</item>
+    </style>
+    <style name="CircleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="BottomNavText" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/poppins</item>
+    </style>
+
+
+
+        <style name="EditText.WithIconPadding">
+            <item name="android:paddingStart">8dp</item>
+            <item name="android:paddingLeft">8dp</item>
+        </style>
+
+        <style name="Shape.Rounded16">
+            <item name="cornerFamily">rounded</item>
+            <item name="cornerSize">16dp</item>
+        </style>
+
+    <!-- Cubre referencias a style="@style/EditText" en layouts -->
+    <style name="EditText" parent="@android:style/Widget.EditText">
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+
+    <!-- Cubre referencias a style="@style/Shape" / shapeAppearanceOverlay="@style/Shape" -->
+    <style name="Shape" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+
+
+</resources>

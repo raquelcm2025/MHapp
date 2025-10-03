@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MyHobbiesApp</string>
+    <string name="genero_icon">Ícono de género</string>
+    <string name="person_icon">Ícono de persona</string>
+    <string name="person_icon2">Ícono de persona 2</string>
+    <string name="email_icon">Ícono de correo</string>
+    <string name="celular_icon">Ícono de celular</string>
+
 </resources>
