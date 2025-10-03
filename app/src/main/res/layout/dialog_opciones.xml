@@ -29,7 +29,7 @@
         android:textAllCaps="false"
         android:textColor="@color/blanco"
         app:cornerRadius="14dp"
-        app:icon="@drawable/ic_borrar"
+        app:icon="@drawable/eliminar"
         app:iconTint="@color/blanco"
         app:backgroundTint="@color/magenta"
         style="@style/Widget.MaterialComponents.Button" />
@@ -38,13 +38,13 @@
         android:id="@+id/btnMarcar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Marcar como realizado"
+        android:text="Marcar como culminado"
         android:textAllCaps="false"
         android:textColor="@color/blanco"
         app:cornerRadius="14dp"
-        app:icon="@drawable/ic_checked"
+        app:icon="@drawable/checked"
         app:iconTint="@color/blanco"
-        app:backgroundTint="@color/azul_claro"
+        app:backgroundTint="@color/azul_oscuro"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_marginTop="12dp"/>
 
@@ -56,9 +56,9 @@
         android:textAllCaps="false"
         android:textColor="@color/blanco"
         app:cornerRadius="14dp"
-        app:icon="@drawable/ic_cancelar"
+        app:icon="@drawable/cancelar"
         app:iconTint="@color/blanco"
-        app:backgroundTint="@color/azul_oscuro"
+        app:backgroundTint="@color/gris_azulado"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_marginTop="12dp"/>
 

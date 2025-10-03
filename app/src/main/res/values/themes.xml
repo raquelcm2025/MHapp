@@ -1,9 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MyHobbiesApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+        <style name="Theme.MyHobbiesApp" parent="Theme.Material3.DayNight.NoActionBar">
+            <item name="colorPrimary">@color/magenta_claro</item>
+            <item name="colorOnPrimary">@android:color/white</item>
 
-    <style name="Theme.MyHobbiesApp" parent="Base.Theme.MyHobbiesApp" />
+            <item name="colorSecondary">@color/magenta_oscuro</item>
+            <item name="colorOnSecondary">@android:color/white</item>
+
+            <item name="colorOutline">@color/pastel</item>
+
+            <item name="colorPrimaryContainer">@color/magenta_claro</item>
+            <item name="colorOnSurface">@android:color/black</item>
+        </style>
+
+
+
+    <style name="Theme.MyHobbies" parent="Theme.Material3.Light.NoActionBar"/>
+
 </resources>
