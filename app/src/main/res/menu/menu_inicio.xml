@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/itInicio"
+            android:icon="@drawable/home"
+            android:title="Inicio" />
+
+        <item
+            android:id="@+id/itExplora"
+            android:icon="@drawable/explore"
+        android:title="Explora" />
+
+        <item
+            android:id="@+id/itChats"
+            android:icon="@drawable/chats"
+            android:title="Estadísticas" />
+
+        <item
+            android:id="@+id/itPerfil"
+            android:icon="@drawable/ic_person2"
+            android:title="Perfil" />
+    </group>
+</menu>
