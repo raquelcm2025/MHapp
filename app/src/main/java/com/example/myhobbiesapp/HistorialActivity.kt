@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.adapter.HistorialAdapter
-import com.example.myhobbiesapp.entity.Hobby
+import com.example.myhobbiesapp.entity.HistorialItem
 
 class HistorialActivity : AppCompatActivity() {
     private lateinit var rvHistorial : RecyclerView
@@ -39,14 +39,13 @@ class HistorialActivity : AppCompatActivity() {
         rvHistorial = findViewById(R.id.rvHistorial)
 
         // Datos de prueba
-        val compras = listOf(
-            Hobby("Karaoke", 2, "27/09/2024"),
-            Hobby("Baile", 6, "23/09/2025"),
-            Hobby("Cocina", 10, "25/09/2023")
+        val items = listOf(
+            HistorialItem("Karaoke", 2, "27/09/2024"),
+            HistorialItem("Baile",   6, "23/09/2025"),
+            HistorialItem("Cocina", 10, "25/09/2023")
         )
-
         // Inicializa el adaptador
-        historialAdapter = HistorialAdapter(compras)
+        historialAdapter = HistorialAdapter(items)
         // Orientación del adaptador
         rvHistorial.layoutManager = LinearLayoutManager(this)
         // Asigna el adaptador al RecyclerView

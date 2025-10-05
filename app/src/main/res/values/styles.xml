@@ -35,7 +35,6 @@
             <item name="cornerSize">16dp</item>
         </style>
 
-    <!-- Cubre referencias a style="@style/EditText" en layouts -->
     <style name="EditText" parent="@android:style/Widget.EditText">
         <item name="android:paddingStart">8dp</item>
         <item name="android:paddingLeft">8dp</item>

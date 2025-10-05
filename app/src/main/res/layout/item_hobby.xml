@@ -13,11 +13,8 @@
             android:textStyle="bold" android:textSize="16sp"/>
 
         <TextView
-            android:id="@+id/tvConteo"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tvFecha"
+            android:id="@+id/tvDescripcion"
             android:layout_width="wrap_content" android:layout_height="wrap_content"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
+

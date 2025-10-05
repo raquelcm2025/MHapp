@@ -68,69 +68,42 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <!-- CONTENEDOR: USUARIO + DOMINIO -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
 
-                <!-- CAMPO USUARIO (full width) -->
+
+
+                <!-- CAMPO CORREO (full) SIN DROPDOWN -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilUsuario"
                     style="@style/Theme.MyHobbies.TextFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo"
-                    app:boxStrokeColor="@color/gris"
+                    android:layout_marginTop="12dp"
+                    android:hint="Correo electrónico"
+                    app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com"
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusBottomEnd="16dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tietUsuario"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textNoSuggestions"
-                        android:singleLine="true"
-                       android:paddingEnd="128dp"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:autofillHints="emailAddress"
+                    android:paddingEnd="16dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- DOMINIO superpuesto -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilDominio"
-                    style="@style/Theme.MyHobbies.TextFields"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginTop="6dp"
-                    app:boxBackgroundMode="outline"
-                    app:boxStrokeColor="@color/gris_muy_claro"
-                    app:boxStrokeWidth="1dp"
-                    app:boxStrokeWidthFocused="1dp"
-                    app:boxCornerRadiusTopStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:endIconMode="dropdown_menu"
-                    app:hintEnabled="false">
+            <!-- Si ya existe tu tilDominio, déjalo pero oculto -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilDominio"
+                android:visibility="gone"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
 
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/actvDominio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:minWidth="130dp"
-                        android:paddingHorizontal="12dp"
-                        android:gravity="center_vertical"
-                        android:backgroundTint="@android:color/transparent"
-                        android:singleLine="true"
-                        android:inputType="none"
-                        android:textColor="@color/gris_azulado"
-                        android:textSize="14sp"/>
-                </com.google.android.material.textfield.TextInputLayout>
 
-            </FrameLayout>
 
 
 
@@ -200,7 +173,7 @@
                     android:fontFamily="@font/nunito_medium"
                     android:textStyle="bold"
                     android:layout_marginStart="6dp"
-                    android:textColor="@color/magenta_oscuro"/>
+                    android:textColor="@color/magenta_oscuro" />
 
             </LinearLayout>
 

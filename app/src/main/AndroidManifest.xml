@@ -9,32 +9,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHobbiesApp">
 
-        <activity
-            android:name=".ListaHobbiesActivity"
-            android:exported="false" />
+        <!-- Host con Drawer + Fragments -->
+        <activity android:name=".ui.InicioActivity" />
 
-        <activity
-            android:name=".CuentaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ChatsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ExploraActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RegistroActivity"
-            android:exported="false" />
+        <activity android:name=".RegistroActivity" />
 
+        <!-- pantalla inicial -->
         <activity
             android:name=".AccesoActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 

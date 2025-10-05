@@ -6,29 +6,30 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.entity.HistorialItem
+import com.example.myhobbiesapp.entity.Hobby
 
-class HistorialAdapter(
-    private val items: List<HistorialItem>
-) : RecyclerView.Adapter<HistorialAdapter.VH>() {
+
+class HobbiesAdapter(
+    private val items: List<Hobby>,
+    private val onClick: (Hobby) -> Unit
+) : RecyclerView.Adapter<HobbiesAdapter.VH>() {
 
     inner class VH(v: View) : RecyclerView.ViewHolder(v) {
         val tvNombre: TextView = v.findViewById(R.id.tvNombre)
-        val tvConteo: TextView = v.findViewById(R.id.tvConteo)
-        val tvFecha:  TextView = v.findViewById(R.id.tvFecha)
+        val tvDesc: TextView   = v.findViewById(R.id.tvDescripcion)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_historial, parent, false)
+            .inflate(R.layout.item_hobby, parent, false)
         return VH(v)
     }
 
     override fun onBindViewHolder(h: VH, pos: Int) {
-        val it = items[pos]
-        h.tvNombre.text = it.nombre
-        h.tvConteo.text = "${it.conteo} actividades"
-        h.tvFecha.text  = it.fecha
+        val item = items[pos]
+        h.tvNombre.text = item.nombre
+        h.tvDesc.text   = item.descripcion
+        h.itemView.setOnClickListener { onClick(item) }
     }
 
     override fun getItemCount() = items.size
