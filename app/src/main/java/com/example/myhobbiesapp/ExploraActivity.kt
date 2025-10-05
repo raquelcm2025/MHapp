@@ -28,7 +28,7 @@ class ExploraActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_chats -> {
-                    startActivity(Intent(this, ExploraActivity::class.java))
+                    startActivity(Intent(this, ChatsActivity::class.java))
                     true
                 }
 
