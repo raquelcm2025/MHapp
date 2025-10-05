@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+
 android {
     namespace = "com.example.myhobbiesapp"
     compileSdk = 35
@@ -49,6 +50,8 @@ dependencies {
     // Room + KSP
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     ksp(libs.androidx.room.compiler)
 
     // Corrutinas + Lifecycle

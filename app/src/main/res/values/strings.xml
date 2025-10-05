@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">MyHobbiesApp</string>
+
+    <!-- Menú -->
+    <string name="menu_home">Inicio</string>
+    <string name="menu_explora">Explora</string>
+    <string name="menu_chats">Chats</string>
+    <string name="menu_perfil">Perfil</string>
+    <string name="menu_settings">Configuración</string>
+
+    <!-- Botones -->
     <string name="genero_icon">Ícono de género</string>
     <string name="person_icon">Ícono de persona</string>
     <string name="person_icon2">Ícono de persona 2</string>

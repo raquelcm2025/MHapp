@@ -9,20 +9,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHobbiesApp">
 
-        <!-- Host con Drawer + Fragments -->
-        <activity android:name=".ui.InicioActivity" />
+        <activity android:name=".ui.InicioActivity"
+            android:exported="true">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+        </activity>
+
+        <activity android:name=".AccesoActivity"/>
 
         <activity android:name=".RegistroActivity" />
 
-        <!-- pantalla inicial -->
-        <activity
-            android:name=".AccesoActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
