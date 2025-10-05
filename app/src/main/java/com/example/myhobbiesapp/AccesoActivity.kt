@@ -30,7 +30,7 @@ class AccesoActivity : AppCompatActivity() {
     // Usuarios de prueba
     private val listaUsuarios = listOf(
         Usuario(1, "Raquel", "Callata Mamani", "raquelcm@mh.pe", "246810"),
-        Usuario(2, "Martha", "Lopez Vargas",  "marlova@hotmail.com", "000000"),
+        Usuario(2, "Martha", "Lopez Valencia",  "marlova@hotmail.com", "000000"),
         Usuario(3, "Luis", "Gomez Moreno",    "lgomez@gmail.com",    "123456")
     )
 

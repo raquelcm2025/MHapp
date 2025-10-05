@@ -114,7 +114,6 @@
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusBottomStart="12dp"
                             app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconDrawable="@drawable/ic_person"
                             app:startIconTint="@color/magenta_claro">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -182,7 +181,6 @@
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusBottomStart="12dp"
                             app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconDrawable="@drawable/ic_person"
                             app:startIconTint="@color/magenta_claro">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -265,77 +263,35 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- ====== CORREO ====== -->
-                <com.google.android.material.card.MaterialCardView
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCorreo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/gris_muy_claro"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/gris_borde"
-                    app:shapeAppearanceOverlay="@style/Shape.Rounded16">
+                    android:hint="Correo electrónico"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/magenta_claro"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:startIconDrawable="@drawable/ic_email"
+                    app:startIconTint="@color/magenta_claro"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/magenta_claro">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCorreo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:autofillHints="emailAddress"
+                    android:imeOptions="actionNext"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp"
-                            android:background="@drawable/label_chip_bg"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="6dp">
 
-                            <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                app:srcCompat="@drawable/ic_email"
-                                app:tint="@color/magenta_claro"
-                                android:contentDescription="@string/email_icon"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Correo electrónico"
-                                android:textStyle="bold"
-                                android:textColor="@color/magenta_oscuro"
-                                android:layout_marginStart="6dp"/>
-                        </LinearLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Correo electrónico"
-                            app:boxBackgroundMode="outline"
-                            app:boxStrokeColor="@color/magenta_claro"
-                            app:boxStrokeWidthFocused="2dp"
-                            app:boxCornerRadiusTopStart="12dp"
-                            app:boxCornerRadiusTopEnd="12dp"
-                            app:boxCornerRadiusBottomStart="12dp"
-                            app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconDrawable="@drawable/ic_email"
-                            app:startIconTint="@color/magenta_claro"
-                            app:endIconMode="clear_text"
-                            app:endIconTint="@color/magenta_claro">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etCorreo"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="textEmailAddress"
-                                android:autofillHints="emailAddress"
-                                android:imeOptions="actionNext"/>
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+            <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -388,9 +344,7 @@
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusBottomStart="12dp"
                             app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconDrawable="@drawable/ic_celular"
-                            app:startIconTint="@color/magenta_claro"
-                            app:helperText="Para recuperar tu cuenta">
+                            app:startIconTint="@color/magenta_claro">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etCelular"

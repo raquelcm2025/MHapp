@@ -44,15 +44,14 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="62dp"
         android:background="#F7F7F7"
-        app:menu="@menu/menu_main"
-        app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/nav_item_selector"
         app:itemTextColor="@color/nav_item_selector"
-        app:itemIconSize="22dp"
         app:itemTextAppearanceActive="@style/BottomNavText"
         app:itemTextAppearanceInactive="@style/BottomNavText"
+        app:menu="@menu/menu_main"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

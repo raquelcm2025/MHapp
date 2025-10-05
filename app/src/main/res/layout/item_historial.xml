@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/blanco"
+    tools:context=".HistorialActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Historial de hobbies"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        style="@style/TextAppearance.AppCompat.Title"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHistorial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tvHobby"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hobby"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvHoras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Número de horas dedicadas semanalmente: "/>
+
+        <TextView
+            android:id="@+id/tvUltimaFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Se realizó por última vez el: "/>
+    </LinearLayout>
+
+</LinearLayout>
