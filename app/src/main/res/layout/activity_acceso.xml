@@ -6,57 +6,56 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco"
+    android:background="@color/mh_surface"
     android:fitsSystemWindows="true"
     tools:context=".AccesoActivity">
 
+    <!-- LOGO -->
     <ImageView
         android:id="@+id/ivLogoInicio"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginTop="60dp"
-        android:scaleType="fitCenter"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="48dp"
+        android:contentDescription="@string/app_name"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintDimensionRatio="3:4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvSlogan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text='"Conecta con personas que comparten tus hobbies”'
-       android:fontFamily="@font/pacifico"
-        android:textSize="16sp"
-        android:textColor="@color/azul_claro"
-        android:textStyle="italic"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/ivLogoInicio"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- SLOGAN (decorativo con Pacifico) -->
     <TextView
-        android:id="@+id/tvTitulo"
+        android:id="@+id/tvSlogan"
+        style="@style/TextAppearance.MyHobbies.Slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="“Conecta con personas que comparten tus hobbies”"
+        android:textColor="@color/mh_secondary"
+        app:layout_constraintTop_toBottomOf="@id/ivLogoInicio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- TÍTULO -->
+    <TextView
+        android:id="@+id/tvTitulo"
+        style="@style/TextAppearance.MyHobbies.TitleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingresa a MyHobbiesApp"
+        android:textColor="@color/mh_primary"
         app:layout_constraintTop_toBottomOf="@id/tvSlogan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Ingresa a MyHobbiesApp"
-        android:fontFamily="@font/nunito_medium"
-        android:layout_marginTop="24dp"
-        android:textSize="26sp"
-        android:textColor="@color/magenta_oscuro"
-        android:textStyle="bold"/>
+        android:layout_marginTop="16dp"/>
 
+    <!-- CONTENIDO -->
     <ScrollView
         android:id="@+id/svContenido"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="24dp"
+        android:fillViewport="true"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="24dp"
         app:layout_constraintTop_toBottomOf="@id/tvTitulo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,22 +67,15 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-
-
-
-                <!-- CAMPO CORREO (full) SIN DROPDOWN -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilUsuario"
-                    style="@style/Theme.MyHobbies.TextFields"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="Correo electrónico"
-                    app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp">
+            <!-- CORREO -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilUsuario"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Correo electrónico"
+                app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietUsuario"
@@ -92,33 +84,25 @@
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
                     android:imeOptions="actionNext"
-                    android:autofillHints="emailAddress"
-                    android:paddingEnd="16dp"/>
+                    android:autofillHints="emailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Si ya existe tu tilDominio, déjalo pero oculto -->
+            <!-- tilDominio (oculto, conservado por compatibilidad) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilDominio"
                 android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="0dp"/>
 
-
-
-
-
+            <!-- CONTRASEÑA -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilClave"
                 style="@style/Theme.MyHobbies.TextFields"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:hint="Contraseña"
-                android:layout_marginTop="16dp"
-                app:endIconMode="password_toggle"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusTopStart="16dp">
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietClave"
@@ -126,32 +110,29 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:inputType="textPassword"/>
-
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- BOTÓN -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnInicio"
                 style="@style/Theme.MyHobbies.ButtonPrimary"
-                android:layout_width="280dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Iniciar sesión"
-                android:fontFamily="@font/poppins"
-                android:textStyle="bold"
                 android:textAllCaps="false"
-                app:cornerRadius="24dp"
-                android:layout_marginTop="28dp"
-                android:backgroundTint="@color/magenta_oscuro"
-                android:textColor="@color/blanco"/>
+                android:layout_marginTop="24dp"/>
 
+            <!-- OLVIDÉ -->
             <TextView
                 android:id="@+id/tvOlvidarClave"
+                style="@style/TextAppearance.MyHobbies.LabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="¿Olvidaste tu contraseña?"
-                android:textColor="@color/gris_azulado"
-                android:fontFamily="@font/nunito_medium"
-                android:layout_marginTop="16dp"/>
+                android:textColor="@color/mh_onSurfaceVariant"
+                android:layout_marginTop="12dp"/>
 
+            <!-- REGISTRO -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,27 +140,22 @@
                 android:layout_marginTop="12dp">
 
                 <TextView
+                    style="@style/TextAppearance.MyHobbies.BodyMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/gris_azulado"
-                    android:fontFamily="@font/nunito_medium"
-                    android:text="¿No tienes una cuenta?"/>
+                    android:text="¿No tienes una cuenta?"
+                    android:textColor="@color/mh_onSurfaceVariant"/>
 
                 <TextView
                     android:id="@+id/tvRegistro"
+                    style="@style/TextAppearance.MyHobbies.BodyMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Regístrate aquí"
-                    android:fontFamily="@font/nunito_medium"
+                    android:text="  Regístrate aquí"
                     android:textStyle="bold"
-                    android:layout_marginStart="6dp"
-                    android:textColor="@color/magenta_oscuro" />
-
+                    android:textColor="@color/mh_primary"/>
             </LinearLayout>
 
-
         </LinearLayout>
-
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

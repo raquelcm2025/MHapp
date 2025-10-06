@@ -2,11 +2,12 @@
     <string name="app_name">MyHobbiesApp</string>
 
     <!-- Menú -->
+    <string name="nav_open">Abrir menú</string>
+    <string name="nav_close">Cerrar menú</string>
     <string name="menu_home">Inicio</string>
     <string name="menu_explora">Explora</string>
     <string name="menu_chats">Chats</string>
     <string name="menu_perfil">Perfil</string>
-    <string name="menu_settings">Configuración</string>
 
     <!-- Botones -->
     <string name="genero_icon">Ícono de género</string>

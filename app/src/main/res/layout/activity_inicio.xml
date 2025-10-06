@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- CONTENIDO -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="MyHobbiesApp"
+            app:title="@string/menu_home"
             app:navigationIcon="@android:drawable/ic_menu_sort_by_size" />
 
         <FrameLayout
@@ -25,11 +26,12 @@
             android:layout_weight="1"/>
     </LinearLayout>
 
-    <!-- Drawer -->
+    <!-- DRAWER -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nvMenu"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/menu_inicio"/>
+        app:menu="@menu/menu_inicio"
+     app:headerLayout="@layout/nav_header"/>
 </androidx.drawerlayout.widget.DrawerLayout>

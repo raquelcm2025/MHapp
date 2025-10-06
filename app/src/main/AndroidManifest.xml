@@ -8,23 +8,23 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHobbiesApp">
-
-        <activity android:name=".ui.InicioActivity"
+        <activity
+            android:name=".AccesoActivity"
             android:exported="true">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN"/>
-                    <category android:name="android.intent.category.LAUNCHER"/>
-                </intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
-        <activity android:name=".AccesoActivity"/>
+        <!-- Host con Drawer + Fragments -->
+        <activity android:name=".ui.InicioActivity" />
 
+        <!-- Registro -->
         <activity android:name=".RegistroActivity" />
-
 
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
+            android:resource="@array/preloaded_fonts"/>
     </application>
 </manifest>

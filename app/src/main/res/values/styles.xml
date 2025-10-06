@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.MyHobbies.TextFields" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/gris</item>
+        <item name="boxStrokeColor">@color/mh_outline</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
-        <item name="hintTextColor">@color/gris_azulado</item>
-        <item name="android:textColor">@color/negro</item>
-        <item name="colorControlActivated">@color/magenta_oscuro</item>
+        <item name="hintTextColor">@color/mh_onSurfaceVariant</item>
+        <item name="android:textColor">@color/mh_onSurface</item>
+        <item name="colorControlActivated">@color/mh_primary</item>
     </style>
 
-    <style name="Theme.MyHobbies.ButtonPrimary" parent="Widget.MaterialComponents.Button">
+    <style name="Theme.MyHobbies.ButtonPrimary" parent="Widget.Material3.Button">
         <item name="cornerRadius">24dp</item>
-        <item name="android:backgroundTint">@color/magenta_oscuro</item>
-        <item name="android:textColor">@color/blanco</item>
+        <item name="backgroundTint">@color/mh_primary</item>
+        <item name="android:textColor">@color/mh_onPrimary</item>
     </style>
+
     <style name="CircleImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
@@ -24,16 +26,15 @@
         <item name="android:lineSpacingExtra">4dp</item>
     </style>
 
-
     <style name="EditText.WithIconPadding">
-            <item name="android:paddingStart">8dp</item>
-            <item name="android:paddingLeft">8dp</item>
-        </style>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+    </style>
 
-        <style name="Shape.Rounded16">
-            <item name="cornerFamily">rounded</item>
-            <item name="cornerSize">16dp</item>
-        </style>
+    <style name="Shape.Rounded16">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
 
     <style name="EditText" parent="@android:style/Widget.EditText">
         <item name="android:paddingStart">8dp</item>
@@ -42,12 +43,10 @@
         <item name="android:paddingRight">8dp</item>
     </style>
 
-    <!-- Cubre referencias a style="@style/Shape" / shapeAppearanceOverlay="@style/Shape" -->
+    <!-- Alias de shape, si ya lo referenciabas -->
     <style name="Shape" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
-
-
 
 </resources>

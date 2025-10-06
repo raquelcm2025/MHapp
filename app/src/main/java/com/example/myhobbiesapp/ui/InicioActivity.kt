@@ -1,6 +1,7 @@
 package com.example.myhobbiesapp.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -9,51 +10,55 @@ import com.example.myhobbiesapp.databinding.ActivityInicioBinding
 import com.google.android.material.navigation.NavigationView
 
 class InicioActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityInicioBinding
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInicioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 1) usa tu Toolbar como ActionBar
         setSupportActionBar(binding.toolbar)
-        binding.toolbar.setNavigationOnClickListener {
-            binding.dlayMenu.openDrawer(GravityCompat.START)
+
+        // 2) conéctala con el Drawer
+        toggle = ActionBarDrawerToggle(
+            this,
+            binding.dlayMenu,
+            binding.toolbar,
+            R.string.nav_open,
+            R.string.nav_close
+        )
+        binding.dlayMenu.addDrawerListener(toggle)
+        toggle.syncState()
+
+        // 3) clicks del menú
+        binding.nvMenu.setNavigationItemSelectedListener {
+            selectMenu(it.itemId)
+            true
         }
 
-        binding.nvMenu.setNavigationItemSelectedListener(navListener)
-
-        if (savedInstanceState == null) {
-            selectMenu(R.id.itInicio)
-        }
+        if (savedInstanceState == null) selectMenu(R.id.itInicio)
     }
 
-    private val navListener = NavigationView.OnNavigationItemSelectedListener { menuItem ->
-        selectMenu(menuItem.itemId); true
-    }
-
-    private fun selectMenu(itemId: Int) {
-        val frag: Fragment = when (itemId) {
+    private fun selectMenu(id: Int) {
+        val frag: Fragment = when (id) {
             R.id.itExplora -> ExploraFragment()
             R.id.itChats   -> ChatsFragment()
             R.id.itPerfil  -> PerfilFragment()
             else           -> InicioFragment()
         }
-        replaceFragment(frag)
-        binding.nvMenu.setCheckedItem(itemId)
-        binding.dlayMenu.closeDrawer(GravityCompat.START)
-        binding.toolbar.title = when (itemId) {
-            R.id.itExplora -> "Explora"
-            R.id.itChats   -> "Chats"
-            R.id.itPerfil  -> "Perfil"
-            else           -> "Inicio"
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.contenedorFragments, fragment)
+            .replace(R.id.contenedorFragments, frag)
             .commit()
+
+        binding.nvMenu.setCheckedItem(id)
+        binding.dlayMenu.openDrawer(GravityCompat.START)  // fuerza abrir
+               binding.toolbar.title = when (id) {
+            R.id.itExplora -> getString(R.string.menu_explora)
+            R.id.itChats   -> getString(R.string.menu_chats)
+            R.id.itPerfil  -> getString(R.string.menu_perfil)
+            else           -> getString(R.string.menu_home)
+        }
     }
 }

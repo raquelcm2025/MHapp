@@ -2,456 +2,218 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".RegistroActivity">
+    android:background="@color/gris_muy_claro">
 
-    <ImageView
-        android:id="@+id/ivLogoInicio"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@mipmap/ic_launcher"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/tvTitulo"
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/llHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Registro de nuevo usuario"
-        android:textColor="@color/magenta_oscuro"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/poppins_semibold"
-        android:gravity="center"
-        android:paddingTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/ivLogoInicio"
+        android:background="@color/magenta_claro"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollForm"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/app_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crea tu cuenta"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/blanco"
+            android:layout_marginStart="12dp"/>
+    </LinearLayout>
+
+    <!-- Contenido -->
+    <ScrollView
+        android:id="@+id/svContenido"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="92dp"
-            app:cardCornerRadius="16dp"
-            app:cardUseCompatPadding="true"
-            app:strokeWidth="1dp"
-            app:strokeColor="#EEEEEE">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/gris_muy_claro"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/gris_borde"
-                    app:shapeAppearanceOverlay="@style/Shape.Rounded16">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <!-- Rótulo -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp"
-                            android:background="@drawable/label_chip_bg"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="6dp">
-
-                            <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                app:srcCompat="@drawable/ic_person"
-                                app:tint="@color/magenta_claro"
-                                android:contentDescription="@string/person_icon"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Nombres"
-                                android:textStyle="bold"
-                                android:textColor="@color/magenta_oscuro"
-                                android:layout_marginStart="6dp"/>
-                        </LinearLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Nombres"
-                            app:boxBackgroundMode="outline"
-                            app:boxStrokeColor="@color/magenta_claro"
-                            app:boxStrokeWidthFocused="2dp"
-                            app:boxCornerRadiusTopStart="12dp"
-                            app:boxCornerRadiusTopEnd="12dp"
-                            app:boxCornerRadiusBottomStart="12dp"
-                            app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconTint="@color/magenta_claro">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etNombres"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="textPersonName|textCapWords"
-                                android:maxLength="40"
-                                android:autofillHints="name"
-                                android:imeOptions="actionNext"/>
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/gris_muy_claro"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/gris_borde"
-                    app:shapeAppearanceOverlay="@style/Shape.Rounded16">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp"
-                            android:background="@drawable/label_chip_bg"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="6dp">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                app:srcCompat="@drawable/ic_person2"
-                                app:tint="@color/magenta_claro"
-                                android:contentDescription="@string/person_icon2"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Apellidos"
-                                android:textStyle="bold"
-                                android:textColor="@color/magenta_oscuro"
-                                android:layout_marginStart="8dp"/>
-                        </LinearLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Apellidos"
-                            app:boxBackgroundMode="outline"
-                            app:boxStrokeColor="@color/magenta_claro"
-                            app:boxStrokeWidthFocused="2dp"
-                            app:boxCornerRadiusTopStart="12dp"
-                            app:boxCornerRadiusTopEnd="12dp"
-                            app:boxCornerRadiusBottomStart="12dp"
-                            app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconTint="@color/magenta_claro">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etApellidos"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="textPersonName|textCapWords"
-                                android:maxLength="40"
-                                android:imeOptions="actionNext"/>
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- ====== GÉNERO ====== -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/gris_muy_claro"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/gris_borde"
-                    app:shapeAppearanceOverlay="@style/Shape.Rounded16">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp"
-                            android:background="@drawable/label_chip_bg"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="6dp">
-
-                            <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                app:srcCompat="@drawable/ic_genero"
-                                app:tint="@color/magenta_claro"
-                                android:contentDescription="@string/genero_icon"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Género"
-                                android:textStyle="bold"
-                                android:textColor="@color/magenta_oscuro"
-                                android:layout_marginStart="6dp"/>
-                        </LinearLayout>
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/cgGenero"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            app:singleSelection="true"
-                            app:selectionRequired="true">
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipMasculino"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:text="Masculino"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipFemenino"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:text="Femenino"/>
-
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipNoDecir"
-                                style="@style/Widget.Material3.Chip.Filter"
-                                android:text="Prefiero no decirlo"/>
-                        </com.google.android.material.chip.ChipGroup>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCorreo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Correo electrónico"
-                    app:boxBackgroundMode="outline"
-                    app:boxStrokeColor="@color/magenta_claro"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:startIconDrawable="@drawable/ic_email"
-                    app:startIconTint="@color/magenta_claro"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="@color/magenta_claro">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCorreo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:autofillHints="emailAddress"
-                    android:imeOptions="actionNext"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/gris_muy_claro"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/gris_borde"
-                    app:shapeAppearanceOverlay="@style/Shape.Rounded16">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp"
-                            android:background="@drawable/label_chip_bg"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="6dp">
-
-                            <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
-                                app:srcCompat="@drawable/ic_celular"
-                                app:tint="@color/magenta_claro"
-                                android:contentDescription="@string/celular_icon"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Celular"
-                                android:textStyle="bold"
-                                android:textColor="@color/magenta_oscuro"
-                                android:layout_marginStart="6dp"/>
-                        </LinearLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Celular"
-                            app:boxBackgroundMode="outline"
-                            app:boxStrokeColor="@color/magenta_claro"
-                            app:boxStrokeWidthFocused="2dp"
-                            app:boxCornerRadiusTopStart="12dp"
-                            app:boxCornerRadiusTopEnd="12dp"
-                            app:boxCornerRadiusBottomStart="12dp"
-                            app:boxCornerRadiusBottomEnd="12dp"
-                            app:startIconTint="@color/magenta_claro">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etCelular"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:maxLength="9"                                android:autofillHints="phone"
-                                android:imeOptions="actionNext"/>
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilClave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Contraseña"
-                    app:boxBackgroundMode="outline"
-                    app:boxStrokeColor="@color/magenta_claro"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:startIconDrawable="@drawable/ic_candado"
-                    app:startIconTint="@color/magenta_claro"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/magenta_claro"
-                    app:helperText="Mínimo 6 caracteres"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="32">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etClave"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:autofillHints="password"
-                        android:imeOptions="actionNext"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- ====== CONFIRMAR CONTRASEÑA ====== -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilClaveConfirmar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Confirmar contraseña"
-                    app:boxBackgroundMode="outline"
-                    app:boxStrokeColor="@color/magenta_claro"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:startIconDrawable="@drawable/ic_candado"
-                    app:startIconTint="@color/magenta_claro"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/magenta_claro">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etClaveConfirmar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:autofillHints="password"
-                        android:imeOptions="actionDone"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/swTerminos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Acepto la política de privacidad y los términos y condiciones de MyHobbiesApp"
-                    android:fontFamily="@font/nunito_medium"
-                    android:textColor="@color/gris_azulado"
-                    android:layout_marginTop="12dp"
-                    app:thumbTint="@color/magenta_claro"
-                    app:trackTint="@color/gris"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRegistrar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Crear cuenta"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:layout_marginTop="16dp"
-                    app:cornerRadius="14dp"
-                    app:iconPadding="10dp"
-                    app:icon="@drawable/checked"
-                    app:iconGravity="textStart"
-                    app:backgroundTint="@color/magenta_claro"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- para VOLVER -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabVolver"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        app:srcCompat="@drawable/home"
-        android:contentDescription="Volver al inicio"
-        app:tint="@color/magenta_claro"
-        app:backgroundTint="@android:color/white"
-        app:borderWidth="1dp"
+        app:layout_constraintTop_toBottomOf="@id/llHeader"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNombres"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombres">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietNombres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilApellidos"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Apellidos">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietApellidos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCorreo"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Correo"
+                app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietCorreo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilClave"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Contraseña"
+                app:endIconMode="password_toggle">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietClave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilConfirmar"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Confirmar contraseña"
+                app:endIconMode="password_toggle">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietConfirmar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCelular"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Celular">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietCelular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Género: dropdown -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilGenero"
+                style="@style/Theme.MyHobbies.TextFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Género"
+                app:endIconMode="dropdown_menu">
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/actvGenero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Hobbies: chips -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hobbies favoritos"
+                android:textStyle="bold"
+                android:textColor="@color/gris_azulado"
+                android:layout_marginTop="16dp"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgHobbies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:singleSelection="false"
+                app:selectionRequired="false"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Música" android:checkable="true"/>
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Ajedrez" android:checkable="true"/>
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Correr" android:checkable="true"/>
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Cocina" android:checkable="true"/>
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Baile" android:checkable="true"/>
+            </com.google.android.material.chip.ChipGroup>
+
+
+            <!-- Switch de Términos y Condiciones -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/swTerminos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Acepto los Términos y Condiciones"
+                android:textColor="@color/gris_azulado"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCrearCuenta"
+                style="@style/Theme.MyHobbies.ButtonPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crear cuenta"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:id="@+id/tvIrLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿Ya tienes cuenta? Inicia sesión"
+                android:textColor="@color/magenta_oscuro"
+                android:layout_marginTop="12dp"/>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

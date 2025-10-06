@@ -1,20 +1,94 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-        <style name="Theme.MyHobbiesApp" parent="Theme.Material3.DayNight.NoActionBar">
-            <item name="colorPrimary">@color/magenta_claro</item>
-            <item name="colorOnPrimary">@android:color/white</item>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MyHobbiesApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/mh_primary</item>
+        <item name="colorOnPrimary">@color/mh_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/mh_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/mh_onPrimaryContainer</item>
 
-            <item name="colorSecondary">@color/magenta_oscuro</item>
-            <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorSecondary">@color/mh_secondary</item>
+        <item name="colorOnSecondary">@color/mh_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/mh_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/mh_onSecondaryContainer</item>
 
-            <item name="colorOutline">@color/pastel</item>
+        <item name="colorTertiary">@color/mh_tertiary</item>
+        <item name="colorOnTertiary">@color/mh_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/mh_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/mh_onTertiaryContainer</item>
 
-            <item name="colorPrimaryContainer">@color/magenta_claro</item>
-            <item name="colorOnSurface">@android:color/black</item>
-        </style>
+        <item name="colorBackgroundFloating">@color/mh_background</item>
+        <item name="colorOnBackground">@color/mh_onBackground</item>
+        <item name="colorSurface">@color/mh_surface</item>
+        <item name="colorOnSurface">@color/mh_onSurface</item>
+        <item name="colorSurfaceVariant">@color/mh_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/mh_onSurfaceVariant</item>
+        <item name="colorOutline">@color/mh_outline</item>
 
+        <!-- TIPOGRAFÍA GLOBAL -->
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:fontFamily">@font/nunito</item>
 
+        <!-- Mapear TextAppearances a tus fuentes -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.MyHobbies.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.MyHobbies.DisplayMedium</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.MyHobbies.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.MyHobbies.HeadlineMedium</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.MyHobbies.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.MyHobbies.TitleMedium</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.MyHobbies.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.MyHobbies.BodyMedium</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.MyHobbies.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.MyHobbies.LabelMedium</item>
 
-    <style name="Theme.MyHobbies" parent="Theme.Material3.Light.NoActionBar"/>
+        <!-- Si no quieres Dynamic Color (Android 12+) -->
+        <!-- <item name="material3.dynamicColor">false</item> -->
+    </style>
 
+    <!-- TextAppearances (pueden estar aquí o en styles.xml; dejo aquí para que tengas todo junto) -->
+    <style name="TextAppearance.MyHobbies.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:fontFamily">@font/nunito</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:fontFamily">@font/nunito</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/nunito_medium</item>
+        <item name="android:fontFamily">@font/nunito_medium</item>
+    </style>
+    <style name="TextAppearance.MyHobbies.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/nunito_medium</item>
+        <item name="android:fontFamily">@font/nunito_medium</item>
+    </style>
+
+    <!-- Slogan opcional -->
+    <style name="TextAppearance.MyHobbies.Slogan" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/pacifico</item>
+        <item name="android:fontFamily">@font/pacifico</item>
+    </style>
 </resources>

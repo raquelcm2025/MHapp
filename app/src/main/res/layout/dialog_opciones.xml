@@ -17,7 +17,7 @@
         android:textAlignment="center"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@color/magenta"
+        android:textColor="@color/mh_primary"
         android:layout_marginBottom="18dp" />
 
     <!-- Botón Eliminar -->
@@ -31,7 +31,7 @@
         app:cornerRadius="14dp"
         app:icon="@drawable/eliminar"
         app:iconTint="@color/blanco"
-        app:backgroundTint="@color/magenta"
+        app:backgroundTint="@color/mh_tertiary"
         style="@style/Widget.MaterialComponents.Button" />
 
     <com.google.android.material.button.MaterialButton
@@ -44,7 +44,7 @@
         app:cornerRadius="14dp"
         app:icon="@drawable/checked"
         app:iconTint="@color/blanco"
-        app:backgroundTint="@color/azul_oscuro"
+        app:backgroundTint="@color/mh_primary"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_marginTop="12dp"/>
 
@@ -58,7 +58,7 @@
         app:cornerRadius="14dp"
         app:icon="@drawable/cancelar"
         app:iconTint="@color/blanco"
-        app:backgroundTint="@color/gris_azulado"
+        app:backgroundTint="@color/azul_claro"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_marginTop="12dp"/>
 
