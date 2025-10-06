@@ -67,34 +67,6 @@ class ListaHobbiesActivity : AppCompatActivity() {
             ).show() // Muestra el mensaje
         }
 
-        /**
-         *         Evento: clic largo para eliminar producto con Dialog Nativo
-         */
-//        lvCompras.setOnItemLongClickListener { _, _, position, _ ->
-//            val producto = listaCompras[position]
-//
-//            // Opciones para el menú
-//            val opciones = arrayOf("Eliminar", "Marcar como comprado")
-//
-//            AlertDialog.Builder(this)
-//                .setTitle("Opciones para $producto")
-//                .setItems(opciones) { _, which ->
-//                    when (which) {
-//                        0 -> {
-//                            listaCompras.removeAt(position)
-//                            adapter.notifyDataSetChanged()
-//                            Toast.makeText(this, "$producto eliminado", Toast.LENGTH_SHORT).show()
-//                        }
-//                        1 -> {
-//                            Toast.makeText(this, "$producto marcado como comprado", Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//                .setNegativeButton("Cancelar", null)
-//                .show()
-//
-//            true // Para indicar que el clic largo fue manejado
-//        }
 
         /**
          *         Evento: clic largo para eliminar producto con Dialog Personalizado
@@ -134,14 +106,14 @@ class ListaHobbiesActivity : AppCompatActivity() {
             }
 
             dialog.show()
-            true // Para indicar que el clic largo fue manejado
+            true
         }
 
         btnHistorial.setOnClickListener {
             startActivity(Intent(this, HistorialActivity::class.java))
         }
 
-        // Hace que el teclado del dispositivo no tape a los Views (EditText, TextInputEditText, etc)
+        // Hace que el teclado del dispositivo no tape a los Views
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

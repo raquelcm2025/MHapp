@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Colores base de tu marca (si aún no existen) -->
+    <!-- Base marca -->
     <color name="magenta_claro">#8C52FF</color>
     <color name="azul_claro">#6BAAFD</color>
 
     <color name="blanco">#FFFFFF</color>
-    <color name="negro">#000000"</color>
+    <color name="negro">#000000</color>
+    <color name="gris">#A9A9A9</color>
+    <color name="gris_claro">#E0E0E0</color>
+    <color name="magenta_oscuro">#7B1FA2</color>
+    <color name="magenta">#9C27B0</color>
+    <color name="gris_azulado">#6B7280</color>
+    <color name="gris_chip">#F1EEF4</color>
+
+
     <!-- PALETA MH (LIGHT) -->
     <color name="mh_primary">@color/magenta_claro</color>
-    <color name="mh_onPrimary">#FFFFFF</color>
+    <color name="mh_onPrimary">@color/blanco</color>
     <color name="mh_primaryContainer">#EADDFF</color>
     <color name="mh_onPrimaryContainer">#2E0058</color>
 
@@ -30,6 +38,7 @@
     <color name="mh_onSurfaceVariant">#49454F</color>
     <color name="mh_outline">#C8C4D0</color>
 
+    <!-- Degradé opcional -->
     <color name="mh_gradient_start">@color/magenta_claro</color>
     <color name="mh_gradient_end">@color/azul_claro</color>
 </resources>

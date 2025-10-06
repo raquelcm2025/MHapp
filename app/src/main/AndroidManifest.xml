@@ -8,6 +8,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHobbiesApp">
+
         <activity
             android:name=".AccesoActivity"
             android:exported="true">
@@ -17,11 +18,8 @@
             </intent-filter>
         </activity>
 
-        <!-- Host con Drawer + Fragments -->
-        <activity android:name=".ui.InicioActivity" />
-
-        <!-- Registro -->
-        <activity android:name=".RegistroActivity" />
+        <activity android:name=".RegistroActivity"/>
+        <activity android:name=".ui.InicioActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

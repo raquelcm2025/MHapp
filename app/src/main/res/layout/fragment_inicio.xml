@@ -1,26 +1,39 @@
-<!-- res/layout/fragment_inicio.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
+
     <LinearLayout
-        android:orientation="vertical" android:padding="16dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp" android:foreground="?attr/selectableItemBackground">
+
             <LinearLayout
-                android:orientation="vertical" android:padding="16dp"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="16dp">
+
                 <TextView
-                    android:text="Bienvenid@" android:textStyle="bold"
-                    android:textSize="18sp" android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:id="@+id/tvSaludo"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textStyle="bold" android:textSize="20sp"
+                    android:text="¡Hola!" />
+
                 <TextView
-                    android:text="Explora hobbies nuevos hoy ✨"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    android:id="@+id/tvSub"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Explora hobbies nuevos hoy ✨"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIrExplora"
+                    style="@style/Theme.MyHobbies.ButtonPrimary"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Ir a Explora"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- agrega más tarjetas aquí -->
     </LinearLayout>
 </ScrollView>
