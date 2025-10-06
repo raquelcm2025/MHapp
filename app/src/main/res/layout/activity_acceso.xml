@@ -22,7 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- SLOGAN (decorativo con Pacifico) -->
     <TextView
         android:id="@+id/tvSlogan"
         style="@style/TextAppearance.MyHobbies.Slogan"
@@ -67,7 +66,6 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <!-- CORREO -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilUsuario"
                 style="@style/Theme.MyHobbies.TextFields"
@@ -122,7 +120,6 @@
                 android:textAllCaps="false"
                 android:layout_marginTop="24dp"/>
 
-            <!-- OLVIDÉ -->
             <TextView
                 android:id="@+id/tvOlvidarClave"
                 style="@style/TextAppearance.MyHobbies.LabelMedium"
@@ -132,7 +129,6 @@
                 android:textColor="@color/mh_onSurfaceVariant"
                 android:layout_marginTop="12dp"/>
 
-            <!-- REGISTRO -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -148,6 +144,8 @@
 
                 <TextView
                     android:id="@+id/tvRegistro"
+                    android:clickable="true"
+                    android:focusable="true"
                     style="@style/TextAppearance.MyHobbies.BodyMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -5,15 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gris_muy_claro">
+    android:background="@color/mh_background">
 
-    <!-- Header -->
     <LinearLayout
         android:id="@+id/llHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/magenta_claro"
-        android:padding="16dp"
+        android:background="@drawable/bg_header_gradient"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="16dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,17 +27,30 @@
             android:src="@mipmap/ic_launcher"
             android:contentDescription="@string/app_name"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Crea tu cuenta"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@color/blanco"
-            android:layout_marginStart="12dp"/>
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registro de un nuevo usuario"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/mh_onPrimary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MyHobbiesApp"
+                android:textSize="14sp"
+                android:textColor="@color/mh_onPrimary"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Contenido -->
+    <!-- CONTENIDO desplazable anclado debajo del header -->
     <ScrollView
         android:id="@+id/svContenido"
         android:layout_width="0dp"
@@ -47,10 +62,10 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:padding="16dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilNombres"
@@ -58,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nombres">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietNombres"
                     android:layout_width="match_parent"
@@ -71,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:hint="Apellidos">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietApellidos"
                     android:layout_width="match_parent"
@@ -83,8 +100,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Correo"
-                app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com">
+                android:hint="Correo">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietCorreo"
                     android:layout_width="match_parent"
@@ -100,6 +117,7 @@
                 android:layout_marginTop="12dp"
                 android:hint="Contraseña"
                 app:endIconMode="password_toggle">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietClave"
                     android:layout_width="match_parent"
@@ -115,6 +133,7 @@
                 android:layout_marginTop="12dp"
                 android:hint="Confirmar contraseña"
                 app:endIconMode="password_toggle">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietConfirmar"
                     android:layout_width="match_parent"
@@ -128,7 +147,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Celular">
+                android:hint="Celular (9 dígitos)">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietCelular"
                     android:layout_width="match_parent"
@@ -136,7 +156,6 @@
                     android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Género: dropdown -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilGenero"
                 style="@style/Theme.MyHobbies.TextFields"
@@ -145,75 +164,44 @@
                 android:layout_marginTop="12dp"
                 android:hint="Género"
                 app:endIconMode="dropdown_menu">
+
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/actvGenero"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"/>
+                    android:layout_height="wrap_content"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Hobbies: chips -->
-            <TextView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnElegirHobbies"
+                style="@style/Theme.MyHobbies.ButtonPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hobbies favoritos"
-                android:textStyle="bold"
-                android:textColor="@color/gris_azulado"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="16dp"
+                android:text="Elegir hobbies"/>
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/cgHobbies"
+            <TextView
+                android:id="@+id/tvHobbiesSeleccionados"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:singleSelection="false"
-                app:selectionRequired="false"
-                app:chipSpacingHorizontal="8dp"
-                app:chipSpacingVertical="8dp">
+                android:text="Sin hobbies"/>
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:text="Música" android:checkable="true"/>
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:text="Ajedrez" android:checkable="true"/>
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:text="Correr" android:checkable="true"/>
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:text="Cocina" android:checkable="true"/>
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:text="Baile" android:checkable="true"/>
-            </com.google.android.material.chip.ChipGroup>
-
-
-            <!-- Switch de Términos y Condiciones -->
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/swTerminos"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Acepto los Términos y Condiciones"
-                android:textColor="@color/gris_azulado"
-                />
+                android:textColor="@color/mh_onSecondaryContainer"
+                android:text="Acepto términos y condiciones de MyHobbiesApp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCrearCuenta"
                 style="@style/Theme.MyHobbies.ButtonPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Crear cuenta"
-                android:layout_marginTop="20dp"/>
-
-            <TextView
-                android:id="@+id/tvIrLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="¿Ya tienes cuenta? Inicia sesión"
-                android:textColor="@color/magenta_oscuro"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="16dp"
+                android:text="Crear cuenta"/>
         </LinearLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
