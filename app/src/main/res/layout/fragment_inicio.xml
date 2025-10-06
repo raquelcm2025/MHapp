@@ -1,3 +1,4 @@
+<!-- res/layout/fragment_inicio.xml -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <LinearLayout
@@ -20,17 +21,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <LinearLayout
-                android:orientation="vertical" android:padding="16dp"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <TextView
-                    android:text="Tu actividad"
-                    android:textStyle="bold" android:textSize="16sp"/>
-                <TextView
-                    android:text="0 publicaciones • 0 seguidores • 0 siguiendo"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        <!-- agrega más tarjetas aquí -->
     </LinearLayout>
 </ScrollView>

@@ -60,8 +60,8 @@ class AccesoActivity : AppCompatActivity() {
     private fun setupListeners() {
         btnInicio.setOnClickListener { onLoginClicked() }
         tvRegistro?.setOnClickListener {
-            val intent = Intent(this, RegistroActivity::class.java)
-            startActivity(intent)
+            Toast.makeText(this, "Abriendo registro...", Toast.LENGTH_SHORT).show() // prueba visible
+            startActivity(Intent(this, RegistroActivity::class.java))
         }
 
         addClearErrorOnTyping(tilUsuario, tietUsuario)

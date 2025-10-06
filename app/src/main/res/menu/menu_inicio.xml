@@ -17,7 +17,7 @@
         <item
             android:id="@+id/itChats"
             android:icon="@drawable/chats"
-            android:title="Estadísticas" />
+            android:title="Chats" />
 
         <item
             android:id="@+id/itPerfil"

@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="negro">#FF000000</color>
-    <color name="blanco">#FFFFFFFF</color>
-    <color name="gris">#928f98</color>
+    <!-- Colores base de tu marca (si aún no existen) -->
+    <color name="magenta_claro">#8C52FF</color>
+    <color name="azul_claro">#6BAAFD</color>
 
-    <color name="gris_claro">#BDBDBD</color>
-    <color name="gris_muy_claro">#FAF7FB</color>
-    <color name="gris_chip">#F1EEF4</color>
-    <color name="gris_borde">#E3E1E6</color>
+    <color name="blanco">#FFFFFF</color>
+    <color name="negro">#000000"</color>
+    <!-- PALETA MH (LIGHT) -->
+    <color name="mh_primary">@color/magenta_claro</color>
+    <color name="mh_onPrimary">#FFFFFF</color>
+    <color name="mh_primaryContainer">#EADDFF</color>
+    <color name="mh_onPrimaryContainer">#2E0058</color>
 
-    <color name="gris_azulado_oscuro">#5E5E7A</color>
-    <color name="gris_azulado">#6B7280</color>
+    <color name="mh_secondary">@color/azul_claro</color>
+    <color name="mh_onSecondary">#00263A</color>
+    <color name="mh_secondaryContainer">#D6EEFF</color>
+    <color name="mh_onSecondaryContainer">#001623</color>
 
-    <color name="magenta">#9C27B0</color>
-    <color name="magenta_oscuro">#7B1FA2</color>
-    <color name="magenta_claro">#8c52ff</color>
-    <color name="pastel">#F06292</color>
-    <color name="pastel_claro">#F8BBD0</color>
+    <color name="mh_tertiary">#F06292</color>
+    <color name="mh_onTertiary">#3E001D</color>
+    <color name="mh_tertiaryContainer">#FFD9E2</color>
+    <color name="mh_onTertiaryContainer">#3E001D</color>
 
-    <color name="azul">#6c7dfd</color>
-    <color name="azul_oscuro">#4646ff</color>
-    <color name="azul_claro">#6baafd</color>
+    <color name="mh_background">#FFFBFF</color>
+    <color name="mh_onBackground">#1C1B1F</color>
+    <color name="mh_surface">#FAF7FB</color>
+    <color name="mh_onSurface">#1C1B1F</color>
+    <color name="mh_surfaceVariant">#E8DFF7</color>
+    <color name="mh_onSurfaceVariant">#49454F</color>
+    <color name="mh_outline">#C8C4D0</color>
 
-    <color name="rosado_claro">#E91E63</color>
-    <color name="rosado_oscuro">#AD1457</color>
-
-
-
-
-
-
+    <color name="mh_gradient_start">@color/magenta_claro</color>
+    <color name="mh_gradient_end">@color/azul_claro</color>
 </resources>
