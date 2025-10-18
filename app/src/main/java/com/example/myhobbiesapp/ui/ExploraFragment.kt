@@ -3,52 +3,66 @@ package com.example.myhobbiesapp.ui
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.core.UserStore
+import com.example.myhobbiesapp.adapter.PerfilesAdapter
+import com.example.myhobbiesapp.sesion.SesionActiva
+import com.example.myhobbiesapp.data.UsuarioDAO
+import com.example.myhobbiesapp.entity.Usuario
 
-data class Persona(val nombre: String, val hobbies: List<String>)
+class ExploraFragment : Fragment(R.layout.fragment_explora), DialogOpcionesExplora.Listener {
 
-class ExploraFragment : Fragment(R.layout.fragment_explora) {
+    private lateinit var rv: RecyclerView
+    private var tvVacio: TextView? = null
+    private lateinit var adapter: PerfilesAdapter
+    private val dao by lazy { UsuarioDAO(requireContext()) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val rv = view.findViewById<RecyclerView>(R.id.rvExplora)
+        super.onViewCreated(view, savedInstanceState)
+        rv = view.findViewById(R.id.rvPerfiles)
+        tvVacio = view.findViewById(R.id.tvVacioExplora)
+
         rv.layoutManager = LinearLayoutManager(requireContext())
-
-        val yo = UserStore.getLogged(requireContext())
-        val misHobbies = yo?.hobbies?.toSet() ?: emptySet()
-
-        // dataset falso
-        val otros = listOf(
-            Persona("Ana Torres", listOf("Karaoke", "Lectura", "Pintura")),
-            Persona("Carlos Díaz", listOf("Running", "Fútbol", "Ajedrez")),
-            Persona("Lucía Pérez", listOf("Yoga", "Senderismo", "Cocina")),
-            Persona("Marco Ruiz", listOf("Fotografía", "Guitarra", "Lectura"))
+        adapter = PerfilesAdapter(
+            onClickItem = { user -> mostrarOpciones(user) },
+            onClickAcciones = { user -> mostrarOpciones(user) }
         )
-        // ordenar por coincidencias
-        val ordenados = otros.sortedByDescending { (it.hobbies.toSet() intersect misHobbies).size }
+        rv.adapter = adapter
 
-        rv.adapter = object : RecyclerView.Adapter<VH>() {
-            override fun onCreateViewHolder(p: android.view.ViewGroup, v: Int): VH {
-                val view = android.view.LayoutInflater.from(p.context)
-                    .inflate(R.layout.item_explora_user, p, false)
-                return VH(view)
-            }
-            override fun getItemCount() = ordenados.size
-            override fun onBindViewHolder(h: VH, pos: Int) {
-                val p = ordenados[pos]
-                val comunes = (p.hobbies.toSet() intersect misHobbies).size
-                h.tvNombre.text = p.nombre
-                h.tvCoin.text = if (comunes == 1) "1 hobby en común" else "$comunes hobbies en común"
-                h.tvHobbies.text = "Hobbies: ${p.hobbies.joinToString(", ")}"
-            }
-        }
+        cargarPerfiles()
     }
 
-    class VH(v: View) : RecyclerView.ViewHolder(v) {
-        val tvNombre: TextView = v.findViewById(R.id.tvNombre)
-        val tvCoin: TextView = v.findViewById(R.id.tvCoincidencias)
-        val tvHobbies: TextView = v.findViewById(R.id.tvHobbies)
+    private fun cargarPerfiles() {
+        val miId = SesionActiva.usuarioActual?.id ?: 0
+        val lista: List<Usuario> = try {
+            dao.listarTodosMenos(miId)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            emptyList()
+        }
+        adapter.submitList(lista)
+        tvVacio?.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun mostrarOpciones(user: Usuario) {
+        val nomApe = "${user.nombre} ${user.apellido}".trim()
+        DialogOpcionesExplora.newInstance(user.id, nomApe)
+            .show(parentFragmentManager, "OpcionesExplora")
+    }
+
+    // del diálogo
+    override fun onVerPerfil(userId: Int) {
+        val frag = PerfilFragment.newInstance(userId)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, frag)
+            .addToBackStack("perfil_externo")
+            .commitAllowingStateLoss()
+    }
+
+    override fun onConectar(userId: Int) {
+        Toast.makeText(requireContext(), "Solicitud enviada ✨", Toast.LENGTH_SHORT).show()
     }
 }

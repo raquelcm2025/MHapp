@@ -2,11 +2,10 @@
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dlayMenu"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- CONTENIDO -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -16,22 +15,24 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/menu_home"
-            app:navigationIcon="@android:drawable/ic_menu_sort_by_size" />
+            android:background="@color/mh_primary"
+            android:titleTextColor="@android:color/white"
+            android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"/>
 
+        <!-- CONTENEDOR DE FRAGMENTS -->
         <FrameLayout
-            android:id="@+id/contenedorFragments"
+            android:id="@+id/nav_host_fragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <!-- DRAWER -->
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nvMenu"
+        android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/menu_inicio"
-     app:headerLayout="@layout/nav_header"/>
+        android:fitsSystemWindows="true"
+        android:background="@color/blanco"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/menu_inicio"/>
 </androidx.drawerlayout.widget.DrawerLayout>

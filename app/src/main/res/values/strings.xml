@@ -16,4 +16,9 @@
     <string name="email_icon">Ícono de correo</string>
     <string name="celular_icon">Ícono de celular</string>
 
+    <string name="agregar">Agregar</string>
+    <string name="agregar_foto">Agregar foto</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="opciones">Opciones</string>
+
 </resources>
