@@ -50,7 +50,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- CONTENIDO desplazable anclado debajo del header -->
     <ScrollView
         android:id="@+id/svContenido"
         android:layout_width="0dp"
@@ -168,23 +167,14 @@
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/actvGenero"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp"
+                    android:dropDownVerticalOffset="8dp"
+                    android:dropDownHorizontalOffset="8dp"
+                    android:background="@null"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnElegirHobbies"
-                style="@style/Theme.MyHobbies.ButtonPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Elegir hobbies"/>
-
-            <TextView
-                android:id="@+id/tvHobbiesSeleccionados"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Sin hobbies"/>
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/swTerminos"

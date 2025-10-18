@@ -1,65 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@color/blanco"
+    android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- Título -->
-    <TextView
-        android:id="@+id/tvTitulo"
+    <Button
+        android:id="@+id/btnEditar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Opciones de Hobby"
-        android:textAlignment="center"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@color/mh_primary"
-        android:layout_marginBottom="18dp" />
+        android:backgroundTint="@color/magenta_claro"
+        android:text="Editar" />
 
-    <!-- Botón Eliminar -->
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/btnEliminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Eliminar de la lista"
-        android:textAllCaps="false"
-        android:textColor="@color/blanco"
-        app:cornerRadius="14dp"
-        app:icon="@drawable/eliminar"
-        app:iconTint="@color/blanco"
-        app:backgroundTint="@color/mh_tertiary"
-        style="@style/Widget.MaterialComponents.Button" />
+        android:backgroundTint="@color/mh_tertiary"
+        android:text="Eliminar" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnMarcar"
+    <Button
+        android:id="@+id/btnCerrarDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Marcar como culminado"
-        android:textAllCaps="false"
-        android:textColor="@color/blanco"
-        app:cornerRadius="14dp"
-        app:icon="@drawable/checked"
-        app:iconTint="@color/blanco"
-        app:backgroundTint="@color/mh_primary"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_marginTop="12dp"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCancelar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cancelar"
-        android:textAllCaps="false"
-        android:textColor="@color/blanco"
-        app:cornerRadius="14dp"
-        app:icon="@drawable/cancelar"
-        app:iconTint="@color/blanco"
-        app:backgroundTint="@color/azul_claro"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_marginTop="12dp"/>
-
+        android:backgroundTint="@color/gris_azulado"
+        android:text="Cerrar" />
 </LinearLayout>

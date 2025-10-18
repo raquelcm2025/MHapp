@@ -1,132 +1,91 @@
 package com.example.myhobbiesapp
 
 import android.os.Bundle
-import android.util.Patterns
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myhobbiesapp.core.HobbiesStore
-import com.example.myhobbiesapp.core.UserStore
-import com.example.myhobbiesapp.databinding.ActivityRegistroBinding
+import com.example.myhobbiesapp.data.UsuarioDAO
 import com.example.myhobbiesapp.entity.Usuario
+import com.example.myhobbiesapp.databinding.ActivityRegistroBinding
 
 class RegistroActivity : AppCompatActivity() {
-
-    private lateinit var b: ActivityRegistroBinding
-    private val allowedDomains = setOf("mh.pe","gmail.com","hotmail.com")
-
-    private val seleccion = mutableSetOf<String>() // hobbies seleccionados
+    private lateinit var binding: ActivityRegistroBinding
+    private val dominios = setOf("mh.pe", "gmail.com", "hotmail.com")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        b = ActivityRegistroBinding.inflate(layoutInflater)
-        setContentView(b.root)
+        binding = ActivityRegistroBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Género
-        b.actvGenero.setAdapter(
-            ArrayAdapter(this, android.R.layout.simple_list_item_1,
-                resources.getStringArray(R.array.generos))
+        val adapterGenero = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            resources.getStringArray(R.array.generos) // asegúrate de tener este array
         )
+        binding.actvGenero.setAdapter(adapterGenero)
 
-        // Elegir hobbies
-        b.btnElegirHobbies.setOnClickListener { showHobbiesDialog() }
+        binding.btnCrearCuenta.setOnClickListener {
+            val nombres    = binding.tietNombres.text?.toString()?.trim().orEmpty()
+            val apellidos  = binding.tietApellidos.text?.toString()?.trim().orEmpty()
+            val correo     = binding.tietCorreo.text?.toString()?.trim().orEmpty()
+            val clave      = binding.tietClave.text?.toString()?.trim().orEmpty()
+            val confirmar  = binding.tietConfirmar.text?.toString()?.trim().orEmpty()
+            val celular    = binding.tietCelular.text?.toString()?.trim().orEmpty()
+            val genero     = binding.actvGenero.text?.toString()?.trim().orEmpty()
+            val terminosOk = binding.swTerminos.isChecked
 
-        // Crear
-        b.btnCrearCuenta.setOnClickListener { onCrear() }
-    }
-
-    private fun showHobbiesDialog() {
-        val all = HobbiesStore.todos
-        val checked = all.map { it in seleccion }.toBooleanArray()
-
-        AlertDialog.Builder(this)
-            .setTitle("Elige tus hobbies")
-            .setMultiChoiceItems(all.toTypedArray(), checked) { _, which, isChecked ->
-                val h = all[which]
-                if (isChecked) seleccion.add(h) else seleccion.remove(h)
+            if (nombres.isEmpty() || apellidos.isEmpty() || correo.isEmpty() ||
+                clave.isEmpty() || confirmar.isEmpty() || celular.isEmpty()) {
+                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setPositiveButton("Aceptar") { d, _ ->
-                b.tvHobbiesSeleccionados.text =
-                    if (seleccion.isEmpty()) "Sin hobbies"
-                    else seleccion.joinToString(", ")
-                d.dismiss()
+            if (clave != confirmar) {
+                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setNegativeButton("Cancelar") { d, _ ->
-                d.dismiss()
+            if (!terminosOk) {
+                Toast.makeText(this, "Debes aceptar los términos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setNeutralButton("Limpiar") { d, _ ->
-                seleccion.clear()
-                b.tvHobbiesSeleccionados.text = "Sin hobbies"
-                d.dismiss()
+            val dom = correo.substringAfter("@").lowercase()
+            if (dom !in dominios) {
+                Toast.makeText(this, "Dominio no permitido", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
             }
-            .show()
-    }
 
-    private fun onCrear() {
-        clearErrors()
+            val dao = UsuarioDAO(this)
+            if (dao.getByCorreo(correo) != null) {
+                Toast.makeText(this, "Ya existe una cuenta con ese correo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-        val nombres = b.tietNombres.text?.toString()?.trim().orEmpty()
-        val apellidos = b.tietApellidos.text?.toString()?.trim().orEmpty()
-        val correo = b.tietCorreo.text?.toString()?.trim().orEmpty()
-        val clave = b.tietClave.text?.toString()?.trim().orEmpty()
-        val conf = b.tietConfirmar.text?.toString()?.trim().orEmpty()
-        val celular = b.tietCelular.text?.toString()?.trim().orEmpty()
-        val genero = b.actvGenero.text?.toString()?.trim().orEmpty()
+            val nuevo = Usuario(
+                nombre = nombres,
+                apellido = apellidos,
+                correo = correo,
+                celular = celular,
+                clave = clave,
+                genero = if (genero.isEmpty()) null else genero,
+                aceptaTerminos = terminosOk,
+                foto = fotoPorGenero(genero)
+            )
 
-        var ok = true
-        if (nombres.isEmpty()) { b.tilNombres.error = "Ingresa tus nombres"; ok = false }
-        if (apellidos.isEmpty()) { b.tilApellidos.error = "Ingresa tus apellidos"; ok = false }
-
-        if (correo.isEmpty()) { b.tilCorreo.error = "Ingresa tu correo"; ok = false }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
-            b.tilCorreo.error = "Correo no válido"; ok = false
-        } else {
-            val dom = correo.substringAfterLast("@","")
-            if (dom !in allowedDomains) { b.tilCorreo.error = "Usa @mh.pe, @gmail.com o @hotmail.com"; ok = false }
+            val id = dao.insert(nuevo)
+            if (id > 0) {
+                Toast.makeText(this, "Cuenta creada 🎉", Toast.LENGTH_LONG).show()
+                finish() // vuelve al login
+            } else {
+                Toast.makeText(this, "Error al crear cuenta", Toast.LENGTH_SHORT).show()
+            }
         }
-
-        if (clave.length < 6) { b.tilClave.error = "Mínimo 6 caracteres"; ok = false }
-        if (conf != clave) { b.tilConfirmar.error = "No coincide"; ok = false }
-
-        if (!celular.matches(Regex("^\\d{9}\$"))) { b.tilCelular.error = "9 dígitos"; ok = false }
-        if (genero.isEmpty()) { b.tilGenero.error = "Selecciona tu género"; ok = false }
-
-        if (!b.swTerminos.isChecked) {
-            Toast.makeText(this, "Acepta los Términos y Condiciones", Toast.LENGTH_SHORT).show()
-            ok = false
-        }
-
-        if (!ok) return
-
-        val user = Usuario(
-            nombres = nombres,
-            apellidos = apellidos,
-            correo = correo,
-            clave = clave,
-            celular = celular,
-            genero = genero,
-            hobbies = seleccion.toList()
-        )
-        UserStore.saveUser(this, user)
-        UserStore.setLogged(this, user.correo)
-
-        AlertDialog.Builder(this)
-            .setTitle("¡Cuenta creada!")
-            .setMessage("Bienvenid@ ${user.nombres} 🎉\nHobbies: ${if (user.hobbies.isEmpty()) "ninguno" else user.hobbies.joinToString(", ")}")
-            .setPositiveButton("Ir a iniciar sesión") { _, _ ->
-                finish() // volvemos al AccesoActivity
-            }
-            .show()
     }
 
-    private fun clearErrors() {
-        b.tilNombres.error = null
-        b.tilApellidos.error = null
-        b.tilCorreo.error = null
-        b.tilClave.error = null
-        b.tilConfirmar.error = null
-        b.tilCelular.error = null
-        b.tilGenero.error = null
+    private fun fotoPorGenero(genero: String): Int {
+        val g = genero.lowercase()
+        return when {
+            g.contains("fem") -> R.drawable.ic_mujer
+            g.contains("mas") -> R.drawable.ic_hombre
+            else -> R.drawable.ic_person
+        }
     }
 }
