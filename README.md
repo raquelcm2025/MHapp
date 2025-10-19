@@ -1,27 +1,27 @@
-MH – MyHobbiesApp 🎨⚽🎶
+🌟 MyHobbiesApp 
 
-App Android (Kotlin) para descubrir y compartir hobbies. Proyecto del curso Desarrollo de Aplicaciones Móviles I (parciales T1 y T2).
+Aplicación Android para gestionar hobbies, explorar perfiles de otros usuarios y editar mi perfil.
 
-✨ Funcionalidades
--Validación de correo y dominio permitido (@mh.pe, @gmail.com, @hotmail.com)
--Registro con selección de hobbies y aceptación de T&C
--Lista de personas ordenada por hobbies en común
--Muestra Perfil (datos del usuario, hobbies y Cerrar sesión)
--Gestión de hobbies
--Historial 
+📜 Funcionalidades:
 
-🧱 Arquitectura 
--Activities “host”: AccesoActivity, InicioActivity, RegistroActivity, HistorialActivity
--Fragments: InicioFragment, ExploraFragment, ChatsFragment, PerfilFragment
--Almacenamiento local UserStore / HobbiesStore
+- Validación de correo y dominio permitido (@mh.pe, @gmail.com, @hotmail.com)
+- Registro de usuario con la confirmación de Términos & Condiciones
+- Lista de personas en la sección Explora
+- Perfil personal con datos, hobbies, galería y opción para cerrar sesión
+- Galería fija con imágenes de hobbies en el perfil
+- Gestión completa de hobbies: agregar, listar y eliminar
+- Historial de hobbies
 
-🧭 Flujo principal
-Acceso → valida correo/clave → guarda sesión con UserStore.setLogged()
-Inicio → saludo + botón a Explora
-Explora → orden por coincidencia de hobbies
-Perfil → ver datos, editar hobbies y cerrar sesión
+🧭Flujo principal:
 
-🛠️ Requisitos
--Android Studio Jellyfish o superior
--minSdk 21, targetSdk 35
--Kotlin 1.9+, Material3
+Acceso → valida correo/clave → guarda sesión (SesionActiva)
+Inicio → saludo personalizado + botón para explorar
+Explora → lista ordenada por coincidencia de hobbies
+Perfil → ver y editar datos, hobbies, cerrar sesión
+
+
+🚀 Próximas mejoras:
+
+- Subida de fotos reales al perfil
+- Permitir agregar más imágenes a la galería
+- Estadísticas de hobbies más populares
