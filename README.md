@@ -14,10 +14,11 @@ Aplicación Android para gestionar hobbies, explorar perfiles de otros usuarios 
 
 🧭Flujo principal:
 
-Acceso → valida correo/clave → guarda sesión (SesionActiva)
-Inicio → saludo personalizado + botón para explorar
-Explora → lista ordenada por coincidencia de hobbies
-Perfil → ver y editar datos, hobbies, cerrar sesión
+- Acceso → valida correo y clave → guarda sesión (SesionActiva)
+- Inicio → saludo personalizado + botón para explorar
+- Explora → lista de perfiles de otros usuarios
+- Chat → lista de amigos para chatear
+- Perfil → ver y editar datos, editar hobbies y cerrar sesión
 
 
 🚀 Próximas mejoras:
