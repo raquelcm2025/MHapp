@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/myhobbiesapp/adapter/PerfilesAdapter.kt
 package com.example.myhobbiesapp.adapter
 
 import android.view.LayoutInflater

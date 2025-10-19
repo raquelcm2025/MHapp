@@ -1,15 +1,16 @@
-package com.example.myhobbiesapp
+package com.example.myhobbiesapp.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myhobbiesapp.sesion.SesionActiva
-import com.example.myhobbiesapp.data.UsuarioDAO
+import com.example.myhobbiesapp.R
+import com.example.myhobbiesapp.data.dao.UsuarioDAO
 import com.example.myhobbiesapp.entity.Usuario
-import com.example.myhobbiesapp.ui.InicioActivity
-import com.google.android.material.textfield.TextInputEditText
+import com.example.myhobbiesapp.sesion.SesionActiva
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 
 class AccesoActivity : AppCompatActivity(R.layout.activity_acceso) {
 
@@ -24,7 +25,7 @@ class AccesoActivity : AppCompatActivity(R.layout.activity_acceso) {
         val etCorreo = findViewById<TextInputEditText>(R.id.tietUsuario)
         val etClave  = findViewById<TextInputEditText>(R.id.tietClave)
         val btnInicio = findViewById<MaterialButton>(R.id.btnInicio)
-        val tvRegistro = findViewById<android.widget.TextView>(R.id.tvRegistro)
+        val tvRegistro = findViewById<TextView>(R.id.tvRegistro)
 
         btnInicio.setOnClickListener {
             val correo = etCorreo.text?.toString()?.trim().orEmpty()
@@ -71,13 +72,42 @@ class AccesoActivity : AppCompatActivity(R.layout.activity_acceso) {
     private fun seedIfEmpty() {
         val dao = UsuarioDAO(this)
 
-        // Comprobación para evitar insertar si ya hay datos
         if (dao.getAll().isNotEmpty()) return
 
         val base = listOf(
-            Usuario(0, "Susana","Martinez","susana@mh.pe","907343431","123456","Femenino", true, R.mipmap.hobby_cocina),
-            Usuario(0, "Ana","Rivera","ana@gmail.com","904111222","clave123","Femenino", true, R.mipmap.hobby_fotografia),
-            Usuario(0, "Carlos","Vega","carlos@gmail.com","911555222","clave246","Masculino", true, R.mipmap.hobby_guitarra)
+            Usuario(
+                0,
+                "Susana Luzmila ",
+                "Martinez León",
+                "susana@mh.pe",
+                "907343431",
+                "123456",
+                "Femenino",
+                true,
+                R.mipmap.hobby_fotografia
+            ),
+            Usuario(
+                0,
+                "Ana Camila",
+                "Rivera López",
+                "ana@gmail.com",
+                "904111222",
+                "clave123",
+                "Femenino",
+                true,
+                R.mipmap.hobby_yoga
+            ),
+            Usuario(
+                0,
+                "Carlos Eduardo",
+                "Vega Torres",
+                "carlos@hotmail.com",
+                "911555222",
+                "clave246",
+                "Masculino",
+                true,
+                R.mipmap.hobby_guitarra
+            )
         )
         base.forEach { u ->
             val dom = u.correo.substringAfter("@").lowercase()

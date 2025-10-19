@@ -1,49 +1,42 @@
-package com.example.myhobbiesapp.ui
+package com.example.myhobbiesapp.ui.dialog
 
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import com.example.myhobbiesapp.databinding.DialogOpcionesExploraBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DialogOpcionesExplora : DialogFragment() {
 
-    interface Listener {
-        fun onVerPerfil(userId: Int)
-        fun onConectar(userId: Int)
-    }
-
     private var _binding: DialogOpcionesExploraBinding? = null
     private val binding get() = _binding!!
+
     private var userId: Int = -1
     private var nombre: String = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        userId = arguments?.getInt(ARG_USER_ID) ?: -1
-        nombre = arguments?.getString(ARG_NOMBRE) ?: ""
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogOpcionesExploraBinding.inflate(LayoutInflater.from(context))
-        binding.tvTitulo.text = if (nombre.isNotBlank()) nombre else "Usuario"
+        _binding = DialogOpcionesExploraBinding.inflate(LayoutInflater.from(requireContext()))
+        userId = requireArguments().getInt(ARG_USER_ID)
+        nombre = requireArguments().getString(ARG_NOMBRE, "")
 
-        val dlg = MaterialAlertDialogBuilder(requireContext())
-            .setView(binding.root)
-            .create()
+        binding.tvTitulo.text = nombre.ifBlank { "Opciones" }
 
         binding.btnVerPerfil.setOnClickListener {
-            (parentFragment as? Listener)?.onVerPerfil(userId)
+            setFragmentResult("explora_ops", bundleOf("action" to "ver", "userId" to userId))
             dismiss()
         }
         binding.btnConectar.setOnClickListener {
-            (parentFragment as? Listener)?.onConectar(userId)
+            setFragmentResult("explora_ops", bundleOf("action" to "conectar", "userId" to userId))
             dismiss()
         }
-        binding.btnCancelar.setOnClickListener { dismiss() }
+        binding.btnCancelar?.setOnClickListener { dismiss() } // si existe en tu layout
 
-        return dlg
+        return MaterialAlertDialogBuilder(requireContext())
+            .setView(binding.root)
+            .create()
     }
 
     override fun onDestroyView() {

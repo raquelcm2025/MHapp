@@ -5,21 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.entity.Chat
 
 class ChatsAdapter(
     private val onClick: (Chat) -> Unit
-) : ListAdapter<Chat, ChatsAdapter.VH>(DIFF) {
+) : RecyclerView.Adapter<ChatsAdapter.VH>() {
 
-    companion object {
-        private val DIFF = object : DiffUtil.ItemCallback<Chat>() {
-            override fun areItemsTheSame(old: Chat, new: Chat) = old.id == new.id
-            override fun areContentsTheSame(old: Chat, new: Chat) = old == new
-        }
+    private val data = mutableListOf<Chat>()
+
+    fun submit(list: List<Chat>) {
+        data.clear()
+        data.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -28,19 +27,22 @@ class ChatsAdapter(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bind(getItem(position), onClick)
+        val item = data[position]
+        holder.bind(item)
+        holder.itemView.setOnClickListener { onClick(item) }
     }
 
-    class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val iv: ImageView = itemView.findViewById(R.id.ivAvatarChat)
-        private val tvTitulo: TextView = itemView.findViewById(R.id.tvTituloChat)
-        private val tvUltimo: TextView = itemView.findViewById(R.id.tvUltimoMsg)
+    override fun getItemCount(): Int = data.size
 
-        fun bind(cp: Chat, onClick: (Chat) -> Unit) {
-            iv.setImageResource(cp.avatar)
-            tvTitulo.text = cp.titulo
-            tvUltimo.text = cp.ultimoMensaje
-            itemView.setOnClickListener { onClick(cp) }
+    class VH(v: View) : RecyclerView.ViewHolder(v) {
+        private val tvTitulo: TextView = v.findViewById(R.id.tvTituloChat)
+        private val tvUltimo: TextView = v.findViewById(R.id.tvUltimoMsg)
+        private val ivAvatar: ImageView = v.findViewById(R.id.ivAvatarChat)
+
+        fun bind(c: Chat) {
+            tvTitulo.text = c.titulo
+            tvUltimo.text = c.ultimoMensaje
+            ivAvatar.setImageResource(c.avatar)
         }
     }
 }
