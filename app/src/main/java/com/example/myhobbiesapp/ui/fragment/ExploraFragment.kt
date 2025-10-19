@@ -1,19 +1,22 @@
-package com.example.myhobbiesapp.ui
+package com.example.myhobbiesapp.ui.fragment
 
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.adapter.PerfilesAdapter
-import com.example.myhobbiesapp.sesion.SesionActiva
-import com.example.myhobbiesapp.data.UsuarioDAO
+import com.example.myhobbiesapp.data.dao.UsuarioDAO
 import com.example.myhobbiesapp.entity.Usuario
+import com.example.myhobbiesapp.sesion.SesionActiva
+import com.example.myhobbiesapp.ui.dialog.DialogOpcionesExplora
+import com.example.myhobbiesapp.ui.dialog.DialogPerfilExplora
 
-class ExploraFragment : Fragment(R.layout.fragment_explora), DialogOpcionesExplora.Listener {
+class ExploraFragment : Fragment(R.layout.fragment_explora) {
 
     private lateinit var rv: RecyclerView
     private var tvVacio: TextView? = null
@@ -22,6 +25,7 @@ class ExploraFragment : Fragment(R.layout.fragment_explora), DialogOpcionesExplo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         rv = view.findViewById(R.id.rvPerfiles)
         tvVacio = view.findViewById(R.id.tvVacioExplora)
 
@@ -31,6 +35,21 @@ class ExploraFragment : Fragment(R.layout.fragment_explora), DialogOpcionesExplo
             onClickAcciones = { user -> mostrarOpciones(user) }
         )
         rv.adapter = adapter
+
+        // Escuchar acciones del diálogo (ver / conectar)
+        setFragmentResultListener("explora_ops") { _, b ->
+            when (b.getString("action")) {
+                "ver" -> {
+                    val userId = b.getInt("userId")
+                    // Mini vista tipo tarjeta (o cambia por tu pantalla preferida)
+                    DialogPerfilExplora.newInstance(userId)
+                        .show(parentFragmentManager, "mini_perfil")
+                }
+                "conectar" -> {
+                    Toast.makeText(requireContext(), "Se envió su solicitud de amistad ✨", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         cargarPerfiles()
     }
@@ -49,20 +68,7 @@ class ExploraFragment : Fragment(R.layout.fragment_explora), DialogOpcionesExplo
 
     private fun mostrarOpciones(user: Usuario) {
         val nomApe = "${user.nombre} ${user.apellido}".trim()
-        DialogOpcionesExplora.newInstance(user.id, nomApe)
+        DialogOpcionesExplora.Companion.newInstance(user.id, nomApe)
             .show(parentFragmentManager, "OpcionesExplora")
-    }
-
-    // del diálogo
-    override fun onVerPerfil(userId: Int) {
-        val frag = PerfilFragment.newInstance(userId)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, frag)
-            .addToBackStack("perfil_externo")
-            .commitAllowingStateLoss()
-    }
-
-    override fun onConectar(userId: Int) {
-        Toast.makeText(requireContext(), "Solicitud enviada ✨", Toast.LENGTH_SHORT).show()
     }
 }

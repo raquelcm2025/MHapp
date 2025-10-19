@@ -1,9 +1,10 @@
-package com.example.myhobbiesapp.data
+package com.example.myhobbiesapp.data.repo
 
 import android.content.Context
+import com.example.myhobbiesapp.data.dao.UsuarioDAO
 import com.example.myhobbiesapp.entity.Usuario
 
-object UsuarioRepository {
+object UsuarioRepo {
 
     fun getAll(ctx: Context): List<Usuario> =
         UsuarioDAO(ctx).getAll()

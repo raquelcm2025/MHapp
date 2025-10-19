@@ -1,12 +1,17 @@
-package com.example.myhobbiesapp.ui
+package com.example.myhobbiesapp.ui.activity
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.databinding.ActivityInicioBinding
+import com.example.myhobbiesapp.ui.fragment.ExploraFragment
+import com.example.myhobbiesapp.ui.fragment.InicioFragment
+import com.example.myhobbiesapp.ui.fragment.PerfilFragment
+import com.example.myhobbiesapp.ui.fragment.ChatsFragment
 
 class InicioActivity : AppCompatActivity() {
 
@@ -17,15 +22,14 @@ class InicioActivity : AppCompatActivity() {
         binding = ActivityInicioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // === TOOLBAR (sin logo, solo título dinámico) ===
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayShowHomeEnabled(false)
             setDisplayUseLogoEnabled(false)
-            title = getString(R.string.menu_home) // Título inicial
+            title = getString(R.string.menu_home)
         }
 
-        // === menú lateral ===
+        // menú lateral
         val toggle = ActionBarDrawerToggle(
             this, binding.drawerLayout, binding.toolbar,
             R.string.nav_open, R.string.nav_close
@@ -33,7 +37,6 @@ class InicioActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // === NAVEGACIÓN - MENU ===
         binding.navView.setNavigationItemSelectedListener { item ->
             val handled = when (item.itemId) {
                 R.id.menu_home    -> { showFragment(InicioFragment(),  "inicio");  true }
@@ -50,13 +53,11 @@ class InicioActivity : AppCompatActivity() {
             handled
         }
 
-        //  CARGAR FRAGMENT INICIAL
         if (savedInstanceState == null) {
             binding.navView.setCheckedItem(R.id.menu_home)
             showFragment(InicioFragment(), "inicio")
         }
 
-        // === BOTÓN ATRÁS
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -68,11 +69,10 @@ class InicioActivity : AppCompatActivity() {
         })
     }
 
-    // === CAMBIA EL FRAGMENT ACTIVO ===
-    private fun showFragment(f: androidx.fragment.app.Fragment, tag: String) {
+    private fun showFragment(f: Fragment, tag: String) {
         val current = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
         if (current != null && current::class == f::class) {
-            updateTitle(tag) // Ya estás en fragment; solo actualiza título
+            updateTitle(tag)
             return
         }
 
@@ -83,7 +83,7 @@ class InicioActivity : AppCompatActivity() {
         updateTitle(tag)
     }
 
-    // === CAMBIA AUTOMÁTICAMENTE EL TÍTULO EN LA TOOLBAR ===
+    // CAMBIA AUTOMÁTICAMENTE EL TÍTULO
     private fun updateTitle(tag: String) {
         supportActionBar?.title = when (tag) {
             "inicio"  -> getString(R.string.menu_home)

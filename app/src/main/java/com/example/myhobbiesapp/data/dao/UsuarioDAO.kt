@@ -1,27 +1,29 @@
-package com.example.myhobbiesapp.data
+package com.example.myhobbiesapp.data.dao
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import com.example.myhobbiesapp.R
+import com.example.myhobbiesapp.data.AppDatabaseHelper
 import com.example.myhobbiesapp.entity.Usuario
 
 class UsuarioDAO(context: Context) {
     private val dbh = AppDatabaseHelper(context)
 
-    private fun getStringSafe(c: android.database.Cursor, col: String, def: String = ""): String {
+    private fun getStringSafe(c: Cursor, col: String, def: String = ""): String {
         val idx = c.getColumnIndex(col)
         return if (idx >= 0 && !c.isNull(idx)) c.getString(idx) ?: def else def
     }
-    private fun getIntSafe(c: android.database.Cursor, col: String, def: Int = 0): Int {
+    private fun getIntSafe(c: Cursor, col: String, def: Int = 0): Int {
         val idx = c.getColumnIndex(col)
         return if (idx >= 0 && !c.isNull(idx)) c.getInt(idx) else def
     }
-    private fun getBoolSafe(c: android.database.Cursor, col: String, def: Boolean = false): Boolean {
+    private fun getBoolSafe(c: Cursor, col: String, def: Boolean = false): Boolean {
         val idx = c.getColumnIndex(col)
         return if (idx >= 0 && !c.isNull(idx)) (c.getInt(idx) == 1) else def
     }
 
-    private fun mapUsuario(c: android.database.Cursor): Usuario {
+    private fun mapUsuario(c: Cursor): Usuario {
         val id       = getIntSafe(c, "id_usuario", 0)
         val nombre   = getStringSafe(c, "nombre")
         val apellido = getStringSafe(c, "apellido")

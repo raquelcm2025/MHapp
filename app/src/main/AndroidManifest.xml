@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHobbiesApp">
 
-        <activity android:name=".AccesoActivity"
+        <activity android:name=".ui.activity.AccesoActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,18 +17,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.InicioActivity"
+        <activity android:name=".ui.activity.InicioActivity"
             android:exported="true" />
-        <activity android:name=".RegistroActivity"
+        <activity android:name=".ui.activity.RegistroActivity"
             android:exported="true"/>
 
-        <activity android:name=".ListaHobbiesActivity"
+        <activity android:name=".ui.activity.ListaHobbiesActivity"
             android:exported="false"/>
-        <activity android:name=".ChatActivity"
+        <activity android:name=".ui.activity.ChatActivity"
             android:exported="false" />
-        <activity android:name=".EditarPerfilActivity"
-            android:exported="false"/>
-        <activity android:name=".HistorialActivity"
+
+        <activity android:name=".ui.activity.HistorialActivity"
             android:exported="false"/>
 
     <meta-data

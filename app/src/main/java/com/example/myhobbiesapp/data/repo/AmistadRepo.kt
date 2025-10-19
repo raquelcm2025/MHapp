@@ -1,4 +1,4 @@
-package com.example.myhobbiesapp.data
+package com.example.myhobbiesapp.data.repo
 
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.entity.Chat
