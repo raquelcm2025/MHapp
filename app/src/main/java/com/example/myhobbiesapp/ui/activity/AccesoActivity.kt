@@ -2,116 +2,55 @@ package com.example.myhobbiesapp.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.data.dao.UsuarioDAO
-import com.example.myhobbiesapp.entity.Usuario
-import com.example.myhobbiesapp.sesion.SesionActiva
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
+import com.example.myhobbiesapp.databinding.ActivityAccesoBinding
+import com.example.myhobbiesapp.util.SecurityUtils
+import com.example.myhobbiesapp.util.SessionManager
 
-class AccesoActivity : AppCompatActivity(R.layout.activity_acceso) {
-
-    private val dominios = setOf("mh.pe", "gmail.com", "hotmail.com")
+class AccesoActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityAccesoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityAccesoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Llama a la función local para asegurar los usuarios de prueba.
-        seedIfEmpty()
+        binding.btnInicio.setOnClickListener {
+            val correo = binding.tietUsuario.text?.toString()?.trim().orEmpty()
+            val clavePlano = binding.tietClave.text?.toString()?.trim().orEmpty()
 
-        val etCorreo = findViewById<TextInputEditText>(R.id.tietUsuario)
-        val etClave  = findViewById<TextInputEditText>(R.id.tietClave)
-        val btnInicio = findViewById<MaterialButton>(R.id.btnInicio)
-        val tvRegistro = findViewById<TextView>(R.id.tvRegistro)
-
-        btnInicio.setOnClickListener {
-            val correo = etCorreo.text?.toString()?.trim().orEmpty()
-            val clave  = etClave.text?.toString()?.trim().orEmpty()
-
-            if (correo.isEmpty() || clave.isEmpty()) {
-                Toast.makeText(this, "Completa correo y contraseña", Toast.LENGTH_SHORT).show()
+            if (!isCorreoPermitido(correo)) {
+                binding.tietUsuario.error = "Correo inválido"
                 return@setOnClickListener
             }
-            val dom = correo.substringAfter("@").lowercase()
-            if (dom !in dominios) {
-                Toast.makeText(this, "Dominio no permitido. Usa @mh.pe @gmail.com @hotmail.com", Toast.LENGTH_LONG).show()
+            if (clavePlano.isEmpty()) {
+                binding.tietClave.error = "Ingresa tu clave"
                 return@setOnClickListener
             }
 
-            val dao = UsuarioDAO(this)
-            // uso de getByCorreo para verificar la existencia.
-            val u = dao.getByCorreo(correo)
-
-            if (u == null) {
-                Toast.makeText(this, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            val claveHash = SecurityUtils.sha256(clavePlano)
+            val usuario = UsuarioDAO(this).getByCorreo(correo)
+            if (usuario != null && usuario.claveHash == claveHash) {
+                SessionManager.saveCurrentEmail(this, correo)
+                startActivity(Intent(this, InicioActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
             }
-            if (u.clave != clave) {
-                Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            SesionActiva.usuarioActual = u
-            startActivity(
-                Intent(this, InicioActivity::class.java).apply {
-                    putExtra("idUsuario", u.id)
-                    putExtra("nombreUsuario", u.nombre)
-                }
-            )
-            finish()
         }
 
-        tvRegistro.setOnClickListener {
+        binding.tvRegistro.setOnClickListener {
             startActivity(Intent(this, RegistroActivity::class.java))
         }
     }
 
-    private fun seedIfEmpty() {
-        val dao = UsuarioDAO(this)
-
-        if (dao.getAll().isNotEmpty()) return
-
-        val base = listOf(
-            Usuario(
-                0,
-                "Susana Luzmila ",
-                "Martinez León",
-                "susana@mh.pe",
-                "907343431",
-                "123456",
-                "Femenino",
-                true,
-                R.mipmap.hobby_fotografia
-            ),
-            Usuario(
-                0,
-                "Ana Camila",
-                "Rivera López",
-                "ana@gmail.com",
-                "904111222",
-                "clave123",
-                "Femenino",
-                true,
-                R.mipmap.hobby_yoga
-            ),
-            Usuario(
-                0,
-                "Carlos Eduardo",
-                "Vega Torres",
-                "carlos@hotmail.com",
-                "911555222",
-                "clave246",
-                "Masculino",
-                true,
-                R.mipmap.hobby_guitarra
-            )
-        )
-        base.forEach { u ->
-            val dom = u.correo.substringAfter("@").lowercase()
-            if (dom in dominios && dao.getByCorreo(u.correo) == null) dao.insert(u)
-        }
+    private fun isCorreoPermitido(correo: String): Boolean {
+        if (!correo.contains("@")) return false
+        val dominios = listOf("@mh.pe", "@hotmail.com", "@gmail.com")
+        val okDom = dominios.any { correo.endsWith(it, ignoreCase = true) }
+        val regex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
+        return okDom && regex.matches(correo)
     }
 }

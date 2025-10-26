@@ -1,14 +1,18 @@
 package com.example.myhobbiesapp.ui.dialog
 
 import android.os.Bundle
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.data.dao.UsuarioDAO
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.example.myhobbiesapp.R
+import com.example.myhobbiesapp.data.dao.UsuarioDAO
 
 class DialogPerfilExplora : BottomSheetDialogFragment() {
 
@@ -32,25 +36,37 @@ class DialogPerfilExplora : BottomSheetDialogFragment() {
         val btnCon   = v.findViewById<MaterialButton>(R.id.btnConectar)
         val btnCan   = v.findViewById<MaterialButton>(R.id.btnCancelar)
 
-        val usuario = try { UsuarioDAO(requireContext()).getById(userId) } catch (_:Exception){ null }
+        val usuario = try { UsuarioDAO(requireContext()).getById(userId) } catch (_: Exception) { null }
         if (usuario == null) {
             Toast.makeText(requireContext(), "Usuario no encontrado", Toast.LENGTH_SHORT).show()
-            dismiss(); return
+            dismiss()
+            return
         }
 
-        tvNombre.text = "${usuario.nombre} ${usuario.apellido}".trim()
-        tvCorreo.text = usuario.correo
-        ivFoto.setImageResource(if (usuario.foto != 0) usuario.foto else R.drawable.ic_person)
-        tvHobby.text = "Hobby favorito: Natación"
+        val nombreCompleto = buildString {
+            append(usuario.nombre)
+            if (usuario.apellidoPaterno.isNotBlank()) append(" ").append(usuario.apellidoPaterno)
+            if (usuario.apellidoMaterno.isNotBlank()) append(" ").append(usuario.apellidoMaterno)
+        }.trim()
 
-        // === Galería horizontal ===
+        tvNombre.text = nombreCompleto
+        tvCorreo.text = usuario.correo
+
+        val generoIcon = when (usuario.genero?.lowercase()) {
+            "femenino", "mujer" -> R.drawable.ic_mujer
+            "masculino", "hombre" -> R.drawable.ic_hombre
+            else -> R.drawable.ic_person
+        }
+        ivFoto.setImageResource(if (usuario.foto != 0) usuario.foto else generoIcon)
+
+        tvHobby.text = "Hobby favorito: Natación" // deja tu valor real si lo tienes en BD
+
         rvMini.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvMini.clipToPadding = false
-        rvMini.setPadding(0, 0, dpToPx(8), 0) // pequeño padding al final
+        rvMini.setPadding(0, 0, dpToPx(8), 0)
 
         val fotos = listOf(R.mipmap.natacion1, R.mipmap.natacion2, R.mipmap.natacion3)
-        val miniAdapter = MiniGaleriaAdapter(fotos)
-        rvMini.adapter = miniAdapter
+        rvMini.adapter = MiniGaleriaAdapter(fotos)
 
         btnCon.setOnClickListener {
             Toast.makeText(requireContext(), "Se envió su solicitud de amistad ✨", Toast.LENGTH_SHORT).show()
@@ -59,8 +75,7 @@ class DialogPerfilExplora : BottomSheetDialogFragment() {
         btnCan.setOnClickListener { dismiss() }
     }
 
-    private fun dpToPx(dp: Int): Int =
-        (dp * resources.displayMetrics.density).toInt()
+    private fun dpToPx(dp: Int): Int = (dp * resources.displayMetrics.density).toInt()
 
     companion object {
         private const val ARG_USER_ID = "arg_user_id"
@@ -70,8 +85,7 @@ class DialogPerfilExplora : BottomSheetDialogFragment() {
     }
 }
 
-/* Adapter interno: sin archivos extra  */
-
+/* Adapter interno */
 private class MiniGaleriaAdapter(
     private val data: List<Int>
 ) : RecyclerView.Adapter<MiniVH>() {
@@ -79,7 +93,6 @@ private class MiniGaleriaAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MiniVH {
         val context = parent.context
         val density = context.resources.displayMetrics.density
-
         val sizePx   = (180 * density).toInt()
         val marginPx = (12 * density).toInt()
 
@@ -89,7 +102,6 @@ private class MiniGaleriaAdapter(
             }
             adjustViewBounds = true
             scaleType = ImageView.ScaleType.CENTER_CROP
-
         }
         return MiniVH(iv)
     }

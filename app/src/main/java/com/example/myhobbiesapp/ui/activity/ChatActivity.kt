@@ -15,11 +15,13 @@ import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.data.repo.ChatMessage
 import com.example.myhobbiesapp.data.repo.ChatsRepo
 import com.example.myhobbiesapp.sesion.SesionActiva
+import com.example.myhobbiesapp.util.CurrentUser
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class ChatActivity : AppCompatActivity(R.layout.activity_chat) {
+
 
     private lateinit var rvMensajes: RecyclerView
     private lateinit var etMensaje: EditText

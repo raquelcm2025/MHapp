@@ -1,4 +1,4 @@
-package com.example.myhobbiesapp.entity
+package com.example.myhobbiesapp.data.entity
 
 data class HistorialItem(
 

@@ -21,7 +21,7 @@
         android:layout_height="40dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_delete"
-        app:tint="@color/magenta"
+        app:tint="@color/colorPrimary"
         android:scaleType="centerInside"
         android:padding="6dp"
         android:contentDescription="@string/eliminar"

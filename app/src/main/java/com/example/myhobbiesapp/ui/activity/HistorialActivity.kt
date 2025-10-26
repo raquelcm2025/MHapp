@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.adapter.HistorialAdapter
 import com.example.myhobbiesapp.data.dao.HobbyDAO
-import com.example.myhobbiesapp.entity.HistorialItem
+import com.example.myhobbiesapp.data.entity.HistorialItem
 
 class HistorialActivity : AppCompatActivity(R.layout.activity_historial) {
     override fun onCreate(savedInstanceState: Bundle?) {

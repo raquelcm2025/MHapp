@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.entity.Hobby
+import com.example.myhobbiesapp.data.entity.Hobby
 
 class HobbyAdapter(
     private val onDelete: ((Hobby) -> Unit)? = null,

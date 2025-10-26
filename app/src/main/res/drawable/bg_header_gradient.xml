@@ -4,7 +4,4 @@
         android:startColor="@color/mh_gradient_start"
         android:endColor="@color/mh_gradient_end"
         android:angle="0"/>
-    <corners
-        android:bottomLeftRadius="24dp"
-        android:bottomRightRadius="24dp"/>
 </shape>

@@ -1,7 +1,7 @@
 package com.example.myhobbiesapp.data.repo
 
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.entity.Chat
+import com.example.myhobbiesapp.data.entity.Chat
 
 object AmistadRepo {
     fun seedFor(userId: Int): List<Chat> {

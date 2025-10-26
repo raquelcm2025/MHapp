@@ -3,127 +3,130 @@ package com.example.myhobbiesapp.data.dao
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.data.AppDatabaseHelper
-import com.example.myhobbiesapp.entity.Usuario
+import com.example.myhobbiesapp.data.database.DatabaseHelper
+import com.example.myhobbiesapp.data.entity.Usuario
 
 class UsuarioDAO(context: Context) {
-    private val dbh = AppDatabaseHelper(context)
+    private val dbHelper = DatabaseHelper(context)
 
-    private fun getStringSafe(c: Cursor, col: String, def: String = ""): String {
-        val idx = c.getColumnIndex(col)
-        return if (idx >= 0 && !c.isNull(idx)) c.getString(idx) ?: def else def
-    }
-    private fun getIntSafe(c: Cursor, col: String, def: Int = 0): Int {
-        val idx = c.getColumnIndex(col)
-        return if (idx >= 0 && !c.isNull(idx)) c.getInt(idx) else def
-    }
-    private fun getBoolSafe(c: Cursor, col: String, def: Boolean = false): Boolean {
-        val idx = c.getColumnIndex(col)
-        return if (idx >= 0 && !c.isNull(idx)) (c.getInt(idx) == 1) else def
+    private fun getStringSafe(c: Cursor, col: String): String {
+        val i = c.getColumnIndex(col)
+        return if (i != -1) c.getString(i) ?: "" else ""
     }
 
-    private fun mapUsuario(c: Cursor): Usuario {
-        val id       = getIntSafe(c, "id_usuario", 0)
-        val nombre   = getStringSafe(c, "nombre")
-        val apellido = getStringSafe(c, "apellido")
-        val correo   = getStringSafe(c, "correo")
-        val celular  = getStringSafe(c, "celular")
-        val clave    = getStringSafe(c, "clave")
-        val genero   = run {
-            val idx = c.getColumnIndex("genero")
-            if (idx >= 0 && !c.isNull(idx)) c.getString(idx) else null
+    private fun splitApellidos(a: String): Pair<String,String> {
+        val p = a.trim().split(" ")
+        return if (p.size >= 2) p.first() to p.drop(1).joinToString(" ") else a to ""
+    }
+
+    fun getAll(): List<Usuario> {
+        val db = dbHelper.readableDatabase
+        val c = db.rawQuery("SELECT * FROM usuario", null)
+        val lista = mutableListOf<Usuario>()
+        if (c.moveToFirst()) {
+            do {
+                val apellido = getStringSafe(c, "apellido")
+                val parts = apellido.trim().split(" ")
+                val apPat = parts.firstOrNull().orEmpty()
+                val apMat = parts.drop(1).joinToString(" ")
+
+                lista.add(
+                    Usuario(
+                        id = c.getInt(c.getColumnIndex("id_usuario")),
+                        nombre = getStringSafe(c, "nombre"),
+                        apellidoPaterno = apPat,
+                        apellidoMaterno = apMat,
+                        correo = getStringSafe(c, "correo"),
+                        celular = getStringSafe(c, "celular"),
+                        claveHash = getStringSafe(c, "clave"),
+                        genero = getStringSafe(c, "genero"),
+                        aceptaTerminos = (c.getInt(c.getColumnIndex("acepta_terminos")) == 1),
+                        foto = c.getInt(c.getColumnIndex("foto"))
+                    )
+                )
+            } while (c.moveToNext())
         }
-        val acepta   = getBoolSafe(c, "acepta_terminos", false)
-        val foto     = getIntSafe(c, "foto", R.drawable.ic_person)
+        c.close(); db.close()
+        return lista
+    }
 
-        return Usuario(
-            id = id,
-            nombre = nombre,
-            apellido = apellido,
-            correo = correo,
-            celular = celular,
-            clave = clave,
-            genero = genero,
-            aceptaTerminos = acepta,
-            foto = if (foto != 0) foto else R.drawable.ic_person
-        )
+
+    fun insert(u: Usuario): Long {
+        val db = dbHelper.writableDatabase
+        val ap = "${u.apellidoPaterno} ${u.apellidoMaterno}".trim()
+        val v = ContentValues().apply {
+            put("nombre", u.nombre)
+            put("apellido", ap)
+            put("correo", u.correo)
+            put("celular", u.celular)
+            put("clave", u.claveHash)
+            put("genero", u.genero)
+            put("acepta_terminos", if (u.aceptaTerminos) 1 else 0)
+            put("foto", u.foto)
+        }
+        val id = db.insert("usuario", null, v)
+        db.close()
+        return id
     }
 
     fun getById(id: Int): Usuario? {
-        val db = dbh.readableDatabase
-        val c = db.rawQuery("SELECT * FROM usuario WHERE id_usuario=? LIMIT 1", arrayOf(id.toString()))
+        val db = dbHelper.readableDatabase
+        val c = db.rawQuery("SELECT * FROM usuario WHERE id_usuario=?", arrayOf(id.toString()))
         var u: Usuario? = null
-        if (c.moveToFirst()) u = mapUsuario(c)
+        if (c.moveToFirst()) {
+            val (apPat, apMat) = splitApellidos(getStringSafe(c, "apellido"))
+            u = Usuario(
+                id = c.getInt(c.getColumnIndex("id_usuario")),
+                nombre = getStringSafe(c, "nombre"),
+                apellidoPaterno = apPat,
+                apellidoMaterno = apMat,
+                correo = getStringSafe(c, "correo"),
+                celular = getStringSafe(c, "celular"),
+                claveHash = getStringSafe(c, "clave"),
+                genero = getStringSafe(c, "genero"),
+                aceptaTerminos = (c.getInt(c.getColumnIndex("acepta_terminos")) == 1),
+                foto = c.getInt(c.getColumnIndex("foto"))
+            )
+        }
         c.close(); db.close()
         return u
     }
 
     fun getByCorreo(correo: String): Usuario? {
-        val db = dbh.readableDatabase
-        val c = db.rawQuery("SELECT * FROM usuario WHERE correo=? LIMIT 1", arrayOf(correo))
+        val db = dbHelper.readableDatabase
+        val c = db.rawQuery("SELECT * FROM usuario WHERE correo=?", arrayOf(correo))
         var u: Usuario? = null
-        if (c.moveToFirst()) u = mapUsuario(c)
+        if (c.moveToFirst()) {
+            val (apPat, apMat) = splitApellidos(getStringSafe(c, "apellido"))
+            u = Usuario(
+                id = c.getInt(c.getColumnIndex("id_usuario")),
+                nombre = getStringSafe(c, "nombre"),
+                apellidoPaterno = apPat,
+                apellidoMaterno = apMat,
+                correo = getStringSafe(c, "correo"),
+                celular = getStringSafe(c, "celular"),
+                claveHash = getStringSafe(c, "clave"),
+                genero = getStringSafe(c, "genero"),
+                aceptaTerminos = (c.getInt(c.getColumnIndex("acepta_terminos")) == 1),
+                foto = c.getInt(c.getColumnIndex("foto"))
+            )
+        }
         c.close(); db.close()
         return u
     }
 
-    fun getAll(): List<Usuario> {
-        val db = dbh.readableDatabase
-        val out = mutableListOf<Usuario>()
-        val c = db.rawQuery("SELECT * FROM usuario ORDER BY nombre COLLATE NOCASE, apellido COLLATE NOCASE", null)
-        while (c.moveToNext()) out.add(mapUsuario(c))
-        c.close(); db.close()
-        return out
-    }
-
-    fun getAllExcept(idExcluido: Int): List<Usuario> = listarTodosMenos(idExcluido)
-
-    fun listarTodosMenos(idExcluido: Int): List<Usuario> {
-        val db = dbh.readableDatabase
-        val out = mutableListOf<Usuario>()
-        val c = db.rawQuery(
-            """
-            SELECT * FROM usuario
-            WHERE id_usuario <> ?
-            ORDER BY nombre COLLATE NOCASE, apellido COLLATE NOCASE
-            """.trimIndent(),
-            arrayOf(idExcluido.toString())
-        )
-        while (c.moveToNext()) out.add(mapUsuario(c))
-        c.close(); db.close()
-        return out
-    }
-
-    fun insert(u: Usuario): Long {
-        val db = dbh.writableDatabase
-        val cv = ContentValues().apply {
-            put("nombre", u.nombre)
-            put("apellido", u.apellido)
-            put("correo", u.correo)
-            put("celular", u.celular)
-            put("clave", u.clave)
-            put("genero", u.genero)
-            put("acepta_terminos", if (u.aceptaTerminos) 1 else 0)
-            put("foto", u.foto)
-        }
-        val id = db.insert("usuario", null, cv)
-        db.close()
-        return id
-    }
-
-    fun updateCelular(idUsuario: Int, celularNuevo: String): Int {
-        val db = dbh.writableDatabase
-        val cv = ContentValues().apply { put("celular", celularNuevo) }
-        val rows = db.update("usuario", cv, "id_usuario=?", arrayOf(idUsuario.toString()))
+    fun updateCelular(id: Int, nuevoCel: String): Int {
+        val db = dbHelper.writableDatabase
+        val v = ContentValues().apply { put("celular", nuevoCel) }
+        val rows = db.update("usuario", v, "id_usuario=?", arrayOf(id.toString()))
         db.close()
         return rows
     }
 
-    fun updateClave(idUsuario: Int, claveNueva: String): Int {
-        val db = dbh.writableDatabase
-        val cv = ContentValues().apply { put("clave", claveNueva) }
-        val rows = db.update("usuario", cv, "id_usuario=?", arrayOf(idUsuario.toString()))
+    fun updateClave(id: Int, nuevaClaveHash: String): Int {
+        val db = dbHelper.writableDatabase
+        val v = ContentValues().apply { put("clave", nuevaClaveHash) }
+        val rows = db.update("usuario", v, "id_usuario=?", arrayOf(id.toString()))
         db.close()
         return rows
     }

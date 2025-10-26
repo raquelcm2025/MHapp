@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.entity.Chat
+import com.example.myhobbiesapp.data.entity.Chat
 
 class ChatsAdapter(
     private val onClick: (Chat) -> Unit

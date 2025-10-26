@@ -3,6 +3,6 @@
     <string-array name="generos">
         <item>Femenino</item>
         <item>Masculino</item>
-        <item>Prefiero no decir</item>
+        <item>Prefiero no decirlo</item>
     </string-array>
 </resources>

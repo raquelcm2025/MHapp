@@ -2,51 +2,53 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mh_background">
+    android:background="@color/mh_background"
+    tools:context=".ui.activity.RegistroActivity">
 
     <LinearLayout
         android:id="@+id/llHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_header_gradient"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="28dp"
-        android:paddingBottom="16dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        android:paddingStart="16dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"
-            android:contentDescription="@string/app_name"/>
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Registro de un nuevo usuario"
-                android:textStyle="bold"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="20sp"
-                android:textColor="@color/mh_onPrimary"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MyHobbiesApp"
-                android:textSize="14sp"
-                android:textColor="@color/mh_onPrimary"/>
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -55,143 +57,223 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/llHeader"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/llHeader">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_margin="16dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="12dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilNombres"
-                style="@style/Theme.MyHobbies.TextFields"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombres">
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tietNombres"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilApellidos"
-                style="@style/Theme.MyHobbies.TextFields"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Apellidos">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tietApellidos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilCorreo"
-                style="@style/Theme.MyHobbies.TextFields"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Correo">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tietCorreo"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Valida tu identidad"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"/>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="bottom">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilClave"
-                style="@style/Theme.MyHobbies.TextFields"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Contraseña"
-                app:endIconMode="password_toggle">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDNI"
+                    style="@style/Theme.MyHobbies.TextFields"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="DNI">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tietClave"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietDNI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="8"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBuscarDNI"
+                    style="@style/Theme.MyHobbies.ButtonPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Buscar"/>
+            </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?attr/dividerHorizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilNombre"
+                    style="@style/Theme.MyHobbies.TextFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Nombre (autocompletado)">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilConfirmar"
-                style="@style/Theme.MyHobbies.TextFields"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Confirmar contraseña"
-                app:endIconMode="password_toggle">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietNombre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tietConfirmar"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilApellidoPaterno"
+                    style="@style/Theme.MyHobbies.TextFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="12dp"
+                    android:hint="Apellido Paterno (autocompletado)">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilCelular"
-                style="@style/Theme.MyHobbies.TextFields"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Celular (9 dígitos)">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietApellidoPaterno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tietCelular"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilApellidoMaterno"
+                    style="@style/Theme.MyHobbies.TextFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="12dp"
+                    android:hint="Apellido Materno (autocompletado)">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilGenero"
-                style="@style/Theme.MyHobbies.TextFields"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Género"
-                app:endIconMode="dropdown_menu">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietApellidoMaterno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/actvGenero"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCorreo"
+                    style="@style/Theme.MyHobbies.TextFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="12dp"
-                    android:dropDownVerticalOffset="8dp"
-                    android:dropDownHorizontalOffset="8dp"
-                    android:background="@null"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="12dp"
+                    android:hint="Correo">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietCorreo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/swTerminos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/mh_onSecondaryContainer"
-                android:text="Acepto términos y condiciones de MyHobbiesApp"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilClave"
+                    style="@style/Theme.MyHobbies.TextFields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="Contraseña"
+                    app:endIconMode="password_toggle">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCrearCuenta"
-                style="@style/Theme.MyHobbies.ButtonPrimary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Crear cuenta"/>
-        </LinearLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietClave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilConfirmar"
+                    style="@style/Theme.MyHobbies.TextFields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="Confirmar contraseña"
+                    app:endIconMode="password_toggle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietConfirmar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCelular"
+                    style="@style/Theme.MyHobbies.TextFields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="Celular (9 dígitos)"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="9">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietCelular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:maxLength="9"
+                        android:digits="0123456789"
+                        android:imeOptions="actionNext"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Género:"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"/>
+
+                    <Spinner
+                        android:id="@+id/spGenero"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:entries="@array/generos"
+                        android:spinnerMode="dropdown"/>
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/swTerminos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/gris"
+                    android:text="Acepto términos y condiciones de MyHobbiesApp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCrearCuenta"
+                    style="@style/Theme.MyHobbies.ButtonPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Crear cuenta"/>
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

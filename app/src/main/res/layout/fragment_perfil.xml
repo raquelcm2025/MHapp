@@ -19,7 +19,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="16dp"
             app:cardUseCompatPadding="true"
-            app:strokeColor="@color/gris_claro"
+            app:strokeColor="@android:color/darker_gray"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -59,14 +59,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="correo@mh.pe"
-                        android:textColor="@color/gris" />
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tvCelular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="99999999"
-                        android:textColor="@color/gris" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardUseCompatPadding="true"
-            app:strokeColor="@color/gris_claro"
+            app:strokeColor="@android:color/darker_gray"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -138,7 +138,7 @@
             android:layout_marginTop="12dp"
             app:cardCornerRadius="16dp"
             app:cardUseCompatPadding="true"
-            app:strokeColor="@color/gris_claro"
+            app:strokeColor="@android:color/darker_gray"
             app:strokeWidth="1dp">
 
             <LinearLayout

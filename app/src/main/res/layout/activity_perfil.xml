@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivFoto"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_person"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tvNombreCompleto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre completo"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="12dp"/>
+
+    <TextView
+        android:id="@+id/tvCorreo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="correo@dominio.com"/>
+
+    <TextView
+        android:id="@+id/tvCelular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="999999999"/>
+
+    <TextView
+        android:id="@+id/tvGenero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Género"/>
+
+</LinearLayout>

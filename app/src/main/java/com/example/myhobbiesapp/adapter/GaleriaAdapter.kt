@@ -23,7 +23,6 @@ class GaleriaAdapter(private val fotos: List<Int>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Muestra siempre las 3 fotos fijas
         if (fotos.isNotEmpty()) {
             holder.iv1.setImageResource(fotos.getOrNull(0) ?: 0)
             holder.iv2.setImageResource(fotos.getOrNull(1) ?: 0)
