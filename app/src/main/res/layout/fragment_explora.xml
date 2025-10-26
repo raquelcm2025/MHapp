@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="Conecta con personas que comparten tus hobbies"
                 android:textSize="14sp"
-                android:textColor="@color/gris_azulado"/>
+                android:textColor="@android:color/darker_gray"/>
         </LinearLayout>
     </LinearLayout>
 

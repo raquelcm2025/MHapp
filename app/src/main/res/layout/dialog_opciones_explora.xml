@@ -19,13 +19,14 @@
         android:id="@+id/btnVerPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/magenta_oscuro"
+        android:backgroundTint="@color/mh_onBackground"
         android:text="Ver perfil"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConectar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
         android:text="Conectar"
         android:layout_marginTop="8dp"/>
 
@@ -34,6 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cancelar"
-        android:backgroundTint="@color/gris_azulado"
+        android:backgroundTint="@color/mh_tertiary"
         android:layout_marginTop="8dp"/>
 </LinearLayout>

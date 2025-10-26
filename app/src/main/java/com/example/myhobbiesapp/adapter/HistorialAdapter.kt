@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.entity.HistorialItem
+import com.example.myhobbiesapp.data.entity.HistorialItem
 
 class HistorialAdapter(private var items: List<HistorialItem>)
     : RecyclerView.Adapter<HistorialAdapter.VH>() {

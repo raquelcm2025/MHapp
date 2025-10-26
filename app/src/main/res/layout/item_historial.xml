@@ -11,7 +11,7 @@
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/blanco"
-    app:strokeColor="@color/gris_claro"
+    app:strokeColor="@android:color/darker_gray"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="N° de amigos que practican este hobby: 3"
-            android:textColor="@color/gris"
+            app:strokeColor="@android:color/darker_gray"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvNombre"

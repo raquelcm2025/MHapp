@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.adapter.ChatsAdapter
 import com.example.myhobbiesapp.data.repo.ChatsRepo
-import com.example.myhobbiesapp.entity.Chat
+import com.example.myhobbiesapp.data.entity.Chat
 import com.example.myhobbiesapp.ui.activity.ChatActivity
 
 class ChatsFragment : Fragment(R.layout.fragment_chats) {

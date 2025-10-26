@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.entity.Usuario
+import com.example.myhobbiesapp.data.entity.Usuario
 
 class PerfilesAdapter(
     private val onClickItem: (Usuario) -> Unit,
@@ -23,12 +23,15 @@ class PerfilesAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(p: ViewGroup, vt: Int): VH {
-        val v = LayoutInflater.from(p.context).inflate(R.layout.item_perfil, p, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_perfil, parent, false)
         return VH(v)
     }
 
-    override fun onBindViewHolder(h: VH, pos: Int) = h.bind(data[pos], onClickItem, onClickAcciones)
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        holder.bind(data[position], onClickItem, onClickAcciones)
+    }
+
     override fun getItemCount(): Int = data.size
 
     class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,10 +40,26 @@ class PerfilesAdapter(
         private val tvCorreo: TextView = itemView.findViewById(R.id.tvCorreo)
         private val btnAcciones: ImageButton = itemView.findViewById(R.id.btnAcciones)
 
-        fun bind(u: Usuario, onClickItem: (Usuario) -> Unit, onClickAcciones: (Usuario) -> Unit) {
-            tvNombre.text = "${u.nombre} ${u.apellido}".trim()
+        fun bind(
+            u: Usuario,
+            onClickItem: (Usuario) -> Unit,
+            onClickAcciones: (Usuario) -> Unit
+        ) {
+            val nombreCompleto = buildString {
+                append(u.nombre)
+                if (u.apellidoPaterno.isNotBlank()) append(" ").append(u.apellidoPaterno)
+                if (u.apellidoMaterno.isNotBlank()) append(" ").append(u.apellidoMaterno)
+            }.trim()
+
+            tvNombre.text = nombreCompleto
             tvCorreo.text = u.correo
-            iv.setImageResource(if (u.foto != 0) u.foto else R.drawable.ic_person)
+
+            val generoIcon = when (u.genero?.lowercase()) {
+                "femenino", "mujer" -> R.drawable.ic_mujer
+                "masculino", "hombre" -> R.drawable.ic_hombre
+                else -> R.drawable.ic_person
+            }
+            iv.setImageResource(if (u.foto != 0) u.foto else generoIcon)
 
             itemView.setOnClickListener { onClickItem(u) }
             btnAcciones.setOnClickListener { onClickAcciones(u) }
