@@ -1,88 +1,93 @@
 package com.example.myhobbiesapp.ui.dialog
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.myhobbiesapp.R
 import com.example.myhobbiesapp.data.dao.UsuarioDAO
 import com.example.myhobbiesapp.util.SecurityUtils
 import com.example.myhobbiesapp.util.SessionManager
-import com.example.myhobbiesapp.sesion.SesionActiva
+import com.google.android.material.textfield.TextInputEditText
 
 class DialogEditarPerfil : DialogFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.dialog_editar_perfil, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, com.google.android.material.R.style.MaterialAlertDialog_Material3)
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val etCel = view.findViewById<EditText>(R.id.etCelular)
-        val etPass = view.findViewById<EditText>(R.id.etClave)
-        val btnGuardar = view.findViewById<Button>(R.id.btnGuardar)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return inflater.inflate(R.layout.dialog_editar_perfil, container, false)
+    }
 
-        val dao = UsuarioDAO(requireContext())
+    override fun onViewCreated(v: View, s: Bundle?) {
+        super.onViewCreated(v, s)
 
-        val emailActual = SessionManager.getCurrentEmail(requireContext())
-        val uSesion = if (emailActual != null) dao.getByCorreo(emailActual) else null
-            ?: SesionActiva.usuarioActual // fallback si aún se usa este objeto
+        val etCel  = v.findViewById<TextInputEditText>(R.id.etCelular)
+        val etPass = v.findViewById<TextInputEditText>(R.id.etClave)
+        val btn    = v.findViewById<Button>(R.id.btnGuardar)
 
-        if (uSesion == null) {
+        // Cargar datos actuales
+        val email = SessionManager.getCurrentEmail(requireContext())
+        val dao   = UsuarioDAO(requireContext())
+        val u     = if (email != null) dao.getByCorreo(email) else null
+
+        if (u == null) {
             Toast.makeText(requireContext(), "Sesión no disponible", Toast.LENGTH_SHORT).show()
-            dismiss()
-            return
+            dismiss(); return
         }
 
-        etCel.setText(uSesion.celular)
+        etCel.setText(u.celular)
         etPass.setText("")
 
-        btnGuardar.setOnClickListener {
+        btn.setOnClickListener {
             val nuevoCel = etCel.text?.toString()?.trim().orEmpty()
-            val nuevaClave = etPass.text?.toString()?.trim().orEmpty()
+            val nuevaPwd = etPass.text?.toString()?.trim().orEmpty()
 
             var ok = true
 
-            if (nuevoCel != uSesion.celular) {
-                val soloDigitos = nuevoCel.all { it.isDigit() }
-                if (nuevoCel.length != 9 || !soloDigitos) {
-                    etCel.error = "Debe tener 9 dígitos"
-                    ok = false
-                }
-            }
+            // Validación: celular exactamente 9 dígitos
+            if (nuevoCel.length != 9 || !nuevoCel.all { it.isDigit() }) {
+                etCel.error = "Debe tener exactamente 9 dígitos"
+                ok = false
+            } else etCel.error = null
 
-            if (nuevaClave.isNotEmpty() && nuevaClave.length < 6) {
+            // Validación: contraseña opcional, pero si escribe, mínimo 6
+            if (nuevaPwd.isNotEmpty() && nuevaPwd.length < 6) {
                 etPass.error = "Mínimo 6 caracteres"
                 ok = false
-            }
+            } else etPass.error = null
 
             if (!ok) return@setOnClickListener
 
             var cambios = 0
-            if (nuevoCel != uSesion.celular) {
-                cambios += dao.updateCelular(uSesion.id, nuevoCel)
+
+            // Actualizar celular si cambió
+            if (nuevoCel != u.celular) {
+                cambios += dao.updateCelular(u.id, nuevoCel)
             }
-            if (nuevaClave.isNotEmpty()) {
-                val hash = SecurityUtils.sha256(nuevaClave)
-                cambios += dao.updateClave(uSesion.id, hash)
+
+            // Actualizar contraseña si escribió algo
+            if (nuevaPwd.isNotEmpty()) {
+                val hash = SecurityUtils.sha256(nuevaPwd)
+                cambios += dao.updateClave(u.id, hash)
             }
 
             if (cambios > 0) {
-                val userRefrescado = dao.getById(uSesion.id)
-                if (userRefrescado != null) {
-                    SesionActiva.usuarioActual = userRefrescado
-                    SessionManager.saveCurrentEmail(requireContext(), userRefrescado.correo)
-                }
-                parentFragmentManager.setFragmentResult("perfil_editado", Bundle())
                 Toast.makeText(requireContext(), "Datos actualizados", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.setFragmentResult(RESULT_PERFIL_EDITADO, Bundle())
                 dismiss()
             } else {
                 Toast.makeText(requireContext(), "Sin cambios", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    companion object {
+        const val RESULT_PERFIL_EDITADO = "perfil_editado"
+        fun newInstance() = DialogEditarPerfil()
     }
 }

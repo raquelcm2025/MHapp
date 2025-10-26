@@ -12,6 +12,7 @@ import com.example.myhobbiesapp.ui.fragment.ExploraFragment
 import com.example.myhobbiesapp.ui.fragment.InicioFragment
 import com.example.myhobbiesapp.ui.fragment.PerfilFragment
 import com.example.myhobbiesapp.ui.fragment.ChatsFragment
+import com.google.android.material.navigation.NavigationView
 
 class InicioActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class InicioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityInicioBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
