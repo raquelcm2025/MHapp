@@ -19,16 +19,29 @@ class DialogEditarPerfil : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         return inflater.inflate(R.layout.dialog_editar_perfil, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     override fun onViewCreated(v: View, s: Bundle?) {
         super.onViewCreated(v, s)
 
-        val etCel  = v.findViewById<TextInputEditText>(R.id.etCelular)
-        val etPass = v.findViewById<TextInputEditText>(R.id.etClave)
-        val btn    = v.findViewById<Button>(R.id.btnGuardar)
+        val etCel       = v.findViewById<TextInputEditText>(R.id.etCelular)
+        val etPass      = v.findViewById<TextInputEditText>(R.id.etClave)
+        val btnGuardar  = v.findViewById<Button>(R.id.btnGuardar)
+        val btnCancelar = v.findViewById<Button>(R.id.btnCancelar)
+
+        // Forzar inicio con texto oculto
+        etPass.transformationMethod =
+            android.text.method.PasswordTransformationMethod.getInstance()
+        etPass.setText("")
 
         // Cargar datos actuales
         val email = SessionManager.getCurrentEmail(requireContext())
@@ -37,25 +50,27 @@ class DialogEditarPerfil : DialogFragment() {
 
         if (u == null) {
             Toast.makeText(requireContext(), "Sesión no disponible", Toast.LENGTH_SHORT).show()
-            dismiss(); return
+            dismiss()
+            return
         }
 
         etCel.setText(u.celular)
-        etPass.setText("")
 
-        btn.setOnClickListener {
+        btnCancelar.setOnClickListener { dismiss() }
+
+        btnGuardar.setOnClickListener {
             val nuevoCel = etCel.text?.toString()?.trim().orEmpty()
             val nuevaPwd = etPass.text?.toString()?.trim().orEmpty()
 
             var ok = true
 
-            // Validación: celular exactamente 9 dígitos
+            // Validación celular
             if (nuevoCel.length != 9 || !nuevoCel.all { it.isDigit() }) {
                 etCel.error = "Debe tener exactamente 9 dígitos"
                 ok = false
             } else etCel.error = null
 
-            // Validación: contraseña opcional, pero si escribe, mínimo 6
+            // Validación contraseña
             if (nuevaPwd.isNotEmpty() && nuevaPwd.length < 6) {
                 etPass.error = "Mínimo 6 caracteres"
                 ok = false
@@ -64,13 +79,9 @@ class DialogEditarPerfil : DialogFragment() {
             if (!ok) return@setOnClickListener
 
             var cambios = 0
-
-            // Actualizar celular si cambió
             if (nuevoCel != u.celular) {
                 cambios += dao.updateCelular(u.id, nuevoCel)
             }
-
-            // Actualizar contraseña si escribió algo
             if (nuevaPwd.isNotEmpty()) {
                 val hash = SecurityUtils.sha256(nuevaPwd)
                 cambios += dao.updateClave(u.id, hash)

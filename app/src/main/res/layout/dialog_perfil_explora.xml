@@ -40,31 +40,60 @@
                     android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nombre Apellido"/>
+                    android:text="Nombre Apellido" />
 
                 <TextView
                     android:id="@+id/tvCorreo"
                     android:textSize="14sp"
-                    android:textColor="#666"
+                    android:textColor="#666666"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="correo@mh.pe"/>
+                    android:text="correo@mh.pe" />
             </LinearLayout>
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvHobbyFav"
             android:layout_marginTop="8dp"
-            android:text="Hobby favorito: Natación"
-            android:textStyle="italic"
+            android:text="Mis Hobbies favoritos:"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipsHobbiesMini"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:singleLine="false"
+            app:singleSelection="false"
+            app:chipSpacingHorizontal="8dp"
+            app:chipSpacingVertical="8dp" />
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:text="Mi galería:"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvEmptyMini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sin fotos aún"
+            android:textStyle="italic"
+            android:textColor="#808080"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMiniGaleria"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

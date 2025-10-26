@@ -3,7 +3,7 @@ package com.example.myhobbiesapp.data.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-class DatabaseHelper(context: Context) :
+class AppDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, "myhobbies.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -40,6 +40,20 @@ class DatabaseHelper(context: Context) :
               FOREIGN KEY(id_hobby)   REFERENCES hobby(id_hobby)   ON DELETE CASCADE
             );
         """.trimIndent())
+        db.execSQL("""
+           CREATE TABLE IF NOT EXISTS foto_local(
+              id        INTEGER PRIMARY KEY AUTOINCREMENT,
+              user_id   INTEGER NOT NULL,
+              uri       TEXT    NOT NULL,
+              created_at INTEGER NOT NULL,
+              FOREIGN KEY(user_id) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+            );
+        
+
+
+
+        """.trimIndent())
+
 
         db.execSQL("INSERT OR IGNORE INTO hobby(nombre) VALUES ('Cine'),('Música'),('Natación'),('Fútbol'),('Videojuegos');")
     }
