@@ -23,18 +23,21 @@ class DatabaseHelper(context: Context) :
 
         db.execSQL("""
             CREATE TABLE IF NOT EXISTS hobby(
-              id_hobby INTEGER PRIMARY KEY AUTOINCREMENT,
-              nombre TEXT NOT NULL UNIQUE
+            id_hobby INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre   TEXT NOT NULL UNIQUE
             );
+
+
+
         """.trimIndent())
 
         db.execSQL("""
-            CREATE TABLE IF NOT EXISTS usuario_hobby(
+              CREATE TABLE IF NOT EXISTS usuario_hobby(
               id_usuario INTEGER NOT NULL,
-              id_hobby INTEGER NOT NULL,
+              id_hobby   INTEGER NOT NULL,
               PRIMARY KEY(id_usuario, id_hobby),
               FOREIGN KEY(id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
-              FOREIGN KEY(id_hobby) REFERENCES hobby(id_hobby) ON DELETE CASCADE
+              FOREIGN KEY(id_hobby)   REFERENCES hobby(id_hobby)   ON DELETE CASCADE
             );
         """.trimIndent())
 

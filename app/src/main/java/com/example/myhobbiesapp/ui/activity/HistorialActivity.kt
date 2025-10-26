@@ -27,10 +27,10 @@ class HistorialActivity : AppCompatActivity(R.layout.activity_historial) {
         }
 
         val dao = HobbyDAO(this)
-        val hist = dao.listHistorialByUser(idUsuario)
-        val lista = hist.map { (nombre, amigos) ->
-            HistorialItem(nombre = nombre, amigos = amigos)
-        }
-        adapter.submit(lista)
+     //   val hist = dao.listHistorialByUser(idUsuario)
+      //  val lista = hist.map { (nombre, amigos) ->
+       //     HistorialItem(nombre = nombre, amigos = amigos)
+        //}
+        //adapter.submit(lista)
     }
 }

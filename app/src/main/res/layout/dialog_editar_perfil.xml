@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:hint="Celular (9 dígitos)"
             android:inputType="phone"
-            android:maxLength="9"/>
+            android:maxLength="9"
+            android:digits="0123456789"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
