@@ -3,11 +3,11 @@ package com.example.myhobbiesapp.data.dao
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import com.example.myhobbiesapp.data.database.DatabaseHelper
+import com.example.myhobbiesapp.data.database.AppDatabaseHelper
 import com.example.myhobbiesapp.data.entity.Hobby
 
 class HobbyDAO(context: Context) {
-    private val dbh = DatabaseHelper(context)
+    private val dbh = AppDatabaseHelper(context)
 
     // Utilidades
     private fun Cursor.getIntSafe(col: String): Int {

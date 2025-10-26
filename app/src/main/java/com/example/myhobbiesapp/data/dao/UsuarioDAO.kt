@@ -3,11 +3,11 @@ package com.example.myhobbiesapp.data.dao
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import com.example.myhobbiesapp.data.database.DatabaseHelper
+import com.example.myhobbiesapp.data.database.AppDatabaseHelper
 import com.example.myhobbiesapp.data.entity.Usuario
 
 class UsuarioDAO(context: Context) {
-    private val dbHelper = DatabaseHelper(context)
+    private val dbHelper = AppDatabaseHelper(context)
 
     private fun getStringSafe(c: Cursor, col: String): String {
         val i = c.getColumnIndex(col)

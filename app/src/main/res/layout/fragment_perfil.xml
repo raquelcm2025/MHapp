@@ -35,7 +35,6 @@
                     android:layout_height="72dp"
                     android:src="@drawable/ic_person"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/bg_avatar_circle"
                     android:contentDescription="@string/app_name" />
 
                 <LinearLayout
@@ -75,10 +74,13 @@
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Editar perfil"
-                        android:minWidth="0dp"
-                        android:layout_marginLeft="90dp"
-                        android:layout_marginTop="10dp" />
+                        android:text="Editar datos"
+                        android:textAllCaps="false"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="24dp" />
+
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -136,7 +138,6 @@
         </com.google.android.material.card.MaterialCardView>
 
 
-        <!-- CARD: Galería -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -160,6 +161,16 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/tvEmptyGaleria"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sin fotos aún"
+                    android:textStyle="italic"
+                    android:textColor="#808080"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvGaleria"
                     android:layout_width="match_parent"
@@ -174,7 +185,6 @@
                     android:gravity="end"
                     android:layout_marginTop="8dp">
 
-                    <!-- Mismo estilo TonalButton -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAgregarFoto"
                         style="@style/Widget.Material3.Button.TonalButton"

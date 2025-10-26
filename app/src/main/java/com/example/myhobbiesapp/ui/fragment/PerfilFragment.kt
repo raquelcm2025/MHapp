@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myhobbiesapp.R
+import com.example.myhobbiesapp.adapter.GaleriaAdapter
+import com.example.myhobbiesapp.data.dao.FotoLocalDAO
 import com.example.myhobbiesapp.data.dao.HobbyDAO
 import com.example.myhobbiesapp.data.dao.UsuarioDAO
 import com.example.myhobbiesapp.databinding.FragmentPerfilBinding
@@ -19,10 +22,32 @@ import com.example.myhobbiesapp.util.SessionManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
+
 class PerfilFragment : Fragment() {
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
+
+    private val galeriaAdapter by lazy { GaleriaAdapter() }
+
+    // Picker con persistencia de permiso (ACTION_OPEN_DOCUMENT)
+    private val pickImage = registerForActivityResult(OpenDocument()) { uri ->
+        val u = usuarioActual() ?: return@registerForActivityResult
+        if (uri != null) {
+            // Persistir permiso de lectura (para que no crashee luego)
+            val flags = (Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+
+            FotoLocalDAO(requireContext()).insert(
+                com.example.myhobbiesapp.data.entity.FotoLocal(
+                    userId = u.id,
+                    uri = uri.toString()
+                )
+            )
+            cargarGaleria(u.id)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,16 +61,21 @@ class PerfilFragment : Fragment() {
     override fun onViewCreated(v: View, s: Bundle?) {
         super.onViewCreated(v, s)
 
+        // Galería horizontal
+        binding.rvGaleria.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvGaleria.adapter = galeriaAdapter
+
         // Cargar datos y hobbies al entrar
         cargarPerfilYHobbies()
 
-        // Refrescar cuando se agregue/edite/elimine un hobby
+        // Refrescar cuando cambien hobbies
         parentFragmentManager.setFragmentResultListener(
             DialogAgregarHobby.RESULT_HOBBIES_CHANGED,
             viewLifecycleOwner
         ) { _, _ -> cargarPerfilYHobbies() }
 
-        // Botón “Añadir / Editar hobbies”
+        // Añadir / Editar hobbies
         binding.btnEditarHobbies.setOnClickListener {
             usuarioActual()?.let { u ->
                 DialogAgregarHobby.newInstance(u.id)
@@ -53,22 +83,24 @@ class PerfilFragment : Fragment() {
             }
         }
 
-        // Botón “Editar perfil”
+        // Editar perfil
         binding.btnEditarPerfil.setOnClickListener {
-            DialogEditarPerfil.newInstance()
-                .show(parentFragmentManager, "editar_perfil")
+            DialogEditarPerfil.newInstance().show(parentFragmentManager, "editar_perfil")
         }
 
-        // Si desde el diálogo de edición de perfil emites “perfil_editado”
+        // Si el diálogo de edición dispara "perfil_editado"
         parentFragmentManager.setFragmentResultListener(
             "perfil_editado",
             viewLifecycleOwner
         ) { _, _ -> cargarPerfilYHobbies() }
 
-        // Botón “Agregar foto”
+        // Agregar foto
         binding.btnAgregarFoto.setOnClickListener {
+            // filtra solo imágenes
+            pickImage.launch(arrayOf("image/*"))
         }
 
+        // Cerrar sesión
         binding.btnCerrarSesion.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Cerrar sesión")
@@ -83,7 +115,7 @@ class PerfilFragment : Fragment() {
         }
     }
 
-    /** Carga el usuario actual y pinta sus datos + hobbies (o “Sin sesión”) */
+    /** Carga usuario + hobbies; y si hay usuario, carga su galería */
     private fun cargarPerfilYHobbies() {
         val u = usuarioActual()
         if (u != null) {
@@ -100,6 +132,7 @@ class PerfilFragment : Fragment() {
             binding.ivAvatar.setImageResource(fotoRes)
 
             renderHobbies(u.id)
+            cargarGaleria(u.id)
         } else {
             binding.tvNombreCompleto.text = "Sin sesión"
             binding.tvCorreo.text = ""
@@ -107,6 +140,21 @@ class PerfilFragment : Fragment() {
             binding.ivAvatar.setImageResource(R.drawable.ic_person)
             binding.chipsHobbies.removeAllViews()
             addChip("Sin hobbies aún")
+            galeriaAdapter.submit(emptyList())
+        }
+    }
+
+    private fun cargarGaleria(userId: Int) {
+        val fotos = FotoLocalDAO(requireContext()).listByUser(userId).map { it.uri }
+
+        if (fotos.isEmpty()) {
+            binding.tvEmptyGaleria.visibility = View.VISIBLE
+            binding.rvGaleria.visibility = View.GONE
+            galeriaAdapter.submit(emptyList())
+        } else {
+            binding.tvEmptyGaleria.visibility = View.GONE
+            binding.rvGaleria.visibility = View.VISIBLE
+            galeriaAdapter.submit(fotos)
         }
     }
 
@@ -117,9 +165,7 @@ class PerfilFragment : Fragment() {
 
         binding.chipsHobbies.removeAllViews()
 
-        // Evita duplicados por nombre (defensa extra de UI)
         val unicos = hobbies.distinctBy { it.nombre.trim().lowercase() }
-
         if (unicos.isEmpty()) {
             addChip("Sin hobbies aún")
             return
@@ -132,7 +178,6 @@ class PerfilFragment : Fragment() {
                 isClickable = true
                 isCloseIconVisible = false
             }
-
             chip.setOnClickListener {
                 PopupMenu(requireContext(), chip).apply {
                     menu.add("Editar")
@@ -146,7 +191,6 @@ class PerfilFragment : Fragment() {
                             }
                             "Eliminar" -> {
                                 dao.unlinkUsuarioHobby(userId, h.id)
-                                // Notifica que cambió
                                 parentFragmentManager.setFragmentResult(
                                     DialogAgregarHobby.RESULT_HOBBIES_CHANGED,
                                     Bundle()
@@ -157,7 +201,6 @@ class PerfilFragment : Fragment() {
                     }
                 }.show()
             }
-
             binding.chipsHobbies.addView(chip)
         }
     }

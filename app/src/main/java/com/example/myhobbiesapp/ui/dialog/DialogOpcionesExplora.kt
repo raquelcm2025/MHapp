@@ -1,38 +1,63 @@
 package com.example.myhobbiesapp.ui.dialog
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
-import com.example.myhobbiesapp.R
+import android.view.ViewGroup
+import com.example.myhobbiesapp.databinding.DialogOpcionesExploraBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.button.MaterialButton
+import androidx.core.os.bundleOf
 
-class DialogOpcionesExplora : BottomSheetDialogFragment(R.layout.dialog_opciones_explora) {
+class DialogOpcionesExplora : BottomSheetDialogFragment() {
 
-    private var userId = -1
+    private var _binding: DialogOpcionesExploraBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        userId = requireArguments().getInt(ARG_USER_ID, -1)
+    private var userId: Int = -1
 
-        val btnVer = view.findViewById<MaterialButton>(R.id.btnVerPerfil)
-        val btnCon = view.findViewById<MaterialButton>(R.id.btnConectar)
-        val btnCan = view.findViewById<MaterialButton>(R.id.btnCancelar)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        userId = requireArguments().getInt(ARG_USER_ID)
+    }
 
-        btnVer.setOnClickListener {
-            DialogPerfilExplora.newInstance(userId).show(parentFragmentManager, "perfil_explora")
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = DialogOpcionesExploraBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(v: View, s: Bundle?) {
+        binding.btnVerPerfil.setOnClickListener {
+            parentFragmentManager.setFragmentResult(
+                RESULT_KEY,
+                bundleOf("accion" to "ver_perfil", "userId" to userId)
+            )
             dismiss()
         }
-        btnCon.setOnClickListener {
-            Toast.makeText(requireContext(), "Solicitud de conexión enviada ✨", Toast.LENGTH_SHORT).show()
+
+        binding.btnConectar.setOnClickListener {
+            parentFragmentManager.setFragmentResult(
+                RESULT_KEY,
+                bundleOf("accion" to "conectar", "userId" to userId)
+            )
             dismiss()
         }
-        btnCan.setOnClickListener { dismiss() }
+
+        binding.btnCancelar.setOnClickListener { dismiss() }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
     companion object {
         private const val ARG_USER_ID = "arg_user_id"
+        const val RESULT_KEY = "opciones_explora_result"
+
         fun newInstance(userId: Int) = DialogOpcionesExplora().apply {
-            arguments = Bundle().apply { putInt(ARG_USER_ID, userId) }
+            arguments = bundleOf(ARG_USER_ID to userId)
         }
     }
 }

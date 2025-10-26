@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activity.AccesoActivity"
-    android:background="@color/blanco">
+    android:background="@color/violeta">
 
     <ImageView
         android:id="@+id/ivLogoInicio"
@@ -16,6 +16,7 @@
         android:layout_marginTop="48dp"
         android:contentDescription="@string/app_name"
         android:src="@mipmap/ic_launcher"
+        android:background="@drawable/bg_avatar_circle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:text="Ingresa a MyHobbiesApp"
         android:layout_marginTop="16dp"
+        android:paddingBottom="20dp"
         app:layout_constraintTop_toBottomOf="@id/ivLogoInicio"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,13 +39,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
+        android:paddingBottom="24dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvTitulo">
 
-        <LinearLayout
+
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -53,7 +57,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/violeta"
+                android:backgroundTint="@color/design_default_color_background"
                 app:cardElevation="8dp"
                 app:cardCornerRadius="8dp">
 
