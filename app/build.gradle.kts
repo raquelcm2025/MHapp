@@ -39,6 +39,7 @@ android {
     kotlinOptions { jvmTarget = "17" }
 }
 
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -63,6 +64,11 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.airbnb.android:lottie:6.4.0")
+    //libreria para showcaseview - tutorial
+    //implementation("com.github.amlcurran.showcaseview:library:5.4.3")
+    //libreria de tutorial moderno
+    implementation("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
+    //otras librerias
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
 }
