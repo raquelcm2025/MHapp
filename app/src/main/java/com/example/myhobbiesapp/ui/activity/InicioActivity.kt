@@ -31,6 +31,11 @@ class InicioActivity : AppCompatActivity() {
     // Snackbar del tour (para "Cancelar")
     private var tourSnack: Snackbar? = null
 
+    // ========= AÑADIDO: THREAD DEL TOUR =========
+    private var tourThread: Thread? = null
+    @Volatile private var tourRunning: Boolean = false
+    // ============================================
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInicioBinding.inflate(layoutInflater)
@@ -75,6 +80,9 @@ class InicioActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
+                } else if (tourRunning) {
+                    // AÑADIDO: cancelar si tour activo
+                    cancelTourThread()
                 } else {
                     finishAfterTransition()
                 }
@@ -117,11 +125,6 @@ class InicioActivity : AppCompatActivity() {
         val nav     = binding.navView
         val toolbar = binding.toolbar
 
-        // colores
-        val MH_LILA    = 0xFFA88CFF.toInt()
-        val MH_CELESTE = 0xFFCDE8FF.toInt()
-        val MH_TEXT    = 0xFF222222.toInt()
-
         // helpers
         fun Int.dp() = (this * resources.displayMetrics.density).toInt()
         fun View.asRectInWindow(): Rect {
@@ -129,10 +132,9 @@ class InicioActivity : AppCompatActivity() {
             getLocationInWindow(p)
             return Rect(p[0], p[1], p[0] + width, p[1] + height)
         }
-        // Rect aprox del icono “sandwich” por si forToolbarNavigationIcon falla
         fun navIconRect(tb: View): Rect {
             val r = tb.asRectInWindow()
-            val size = 48.dp() // área del botón de nav
+            val size = 48.dp()
             val left = r.left + 8.dp()
             val top  = r.top + (tb.height - size)/2
             return Rect(left, top, left + size, top + size)
@@ -145,26 +147,26 @@ class InicioActivity : AppCompatActivity() {
                 // bloquea gestos mientras corre el tour
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-                // botón Cancelar seguro (no depende de “tocar fuera”)
-                val snack = com.google.android.material.snackbar.Snackbar
-                    .make(findViewById(android.R.id.content), "Tour en progreso", com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Cancelar") {
-                        drawer.closeDrawers()
-                        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                    }
-                snack.show()
+                // === AÑADIDO: snackbar reutilizable con cancelación del THREAD ===
+                showTourCancelSnack {
+                    // cancelar tour “de fondo” y liberar UI
+                    cancelTourThread()
+                    drawer.closeDrawers()
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                }
+                // === AÑADIDO: comienza proceso en background mientras el usuario hace el tour visual ===
+                startTourThread()
 
                 // Espera a que el toolbar esté medido
                 toolbar.post {
-                    // 1) Paso “sandwich”: usa forToolbarNavigationIcon y si no, fallback a forBounds(navIconRect)
                     val paso1 = try {
-                        com.getkeepsafe.taptargetview.TapTarget.forToolbarNavigationIcon(
+                        TapTarget.forToolbarNavigationIcon(
                             toolbar,
                             "Abrir menú",
                             "Toca dentro del círculo para continuar."
                         )
                     } catch (_: Throwable) {
-                        com.getkeepsafe.taptargetview.TapTarget.forBounds(
+                        TapTarget.forBounds(
                             navIconRect(toolbar),
                             "Abrir menú",
                             "Toca dentro del círculo para continuar."
@@ -177,32 +179,30 @@ class InicioActivity : AppCompatActivity() {
                         .descriptionTextColorInt(MH_TEXT)
                         .transparentTarget(true)
                         .drawShadow(true)
-                        .cancelable(true) // permite tocar fuera para cancelar este primer paso
+                        .cancelable(true)
                         .id(1001)
 
-                    com.getkeepsafe.taptargetview.TapTargetView.showFor(
+                    TapTargetView.showFor(
                         this,
                         paso1,
-                        object : com.getkeepsafe.taptargetview.TapTargetView.Listener() {
-                            override fun onTargetClick(view: com.getkeepsafe.taptargetview.TapTargetView) {
+                        object : TapTargetView.Listener() {
+                            override fun onTargetClick(view: TapTargetView) {
                                 super.onTargetClick(view)
                                 // abrir y BLOQUEAR drawer abierto
                                 drawer.openDrawer(GravityCompat.START)
                                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
 
-                                // 2) Lanza la secuencia cuando el menú ya está visible/medido
                                 nav.postDelayed({
-                                    // targets con leve desplazamiento a la izquierda
                                     fun viewRect(v: View, offsetXDp: Int): Rect {
                                         val base = v.asRectInWindow()
                                         val dx = offsetXDp.dp()
                                         return Rect(base.left + dx, base.top, base.right + dx, base.bottom)
                                     }
-                                    fun itemTarget(itemId: Int, title: String, desc: String, id: Int): com.getkeepsafe.taptargetview.TapTarget {
+                                    fun itemTarget(itemId: Int, title: String, desc: String, id: Int): TapTarget {
                                         val itemView = nav.findViewById<View>(itemId)
                                         return if (itemView != null) {
-                                            com.getkeepsafe.taptargetview.TapTarget.forBounds(
-                                                viewRect(itemView, -12), // mueve 12dp a la izquierda
+                                            TapTarget.forBounds(
+                                                viewRect(itemView, -12),
                                                 title, desc
                                             )
                                                 .outerCircleColorInt(if (id % 2 == 0) MH_CELESTE else MH_LILA)
@@ -211,14 +211,13 @@ class InicioActivity : AppCompatActivity() {
                                                 .descriptionTextColorInt(MH_TEXT)
                                                 .transparentTarget(true)
                                                 .drawShadow(true)
-                                                .cancelable(false)     // ya no se cancela tocando fuera
+                                                .cancelable(false)
                                                 .targetRadius(34)
                                                 .id(id)
                                         } else {
-                                            // fallback por si el item aún no está
                                             val root = findViewById<View>(R.id.nav_host_fragment)
                                             val r = Rect(root.width/4, root.height/3, root.width*3/4, root.height*2/3)
-                                            com.getkeepsafe.taptargetview.TapTarget.forBounds(r, title, desc)
+                                            TapTarget.forBounds(r, title, desc)
                                                 .outerCircleColorInt(MH_CELESTE)
                                                 .titleTextColorInt(MH_TEXT)
                                                 .descriptionTextColorInt(MH_TEXT)
@@ -229,16 +228,18 @@ class InicioActivity : AppCompatActivity() {
                                         }
                                     }
 
-                                    val t2 = itemTarget(R.id.menu_home,    "Inicio",  "Pantalla de bienvenida y tutorial.",            2)
-                                    val t3 = itemTarget(R.id.menu_explora, "Explora", "Descubre perfiles con hobbies en común.",       3)
-                                    val t4 = itemTarget(R.id.menu_chats,   "Chats",   "Conversa y comparte intereses en tiempo real.", 4)
+                                    val t2 = itemTarget(R.id.menu_home,    "Inicio",   "Pantalla de bienvenida y tutorial.",            2)
+                                    val t3 = itemTarget(R.id.menu_explora, "Explora",  "Descubre perfiles con hobbies en común.",       3)
+                                    val t4 = itemTarget(R.id.menu_chats,   "Chats",    "Conversa y comparte intereses en tiempo real.", 4)
                                     val t5 = itemTarget(R.id.menu_perfil,  "Mi Perfil","Edita tu celular y contraseña cuando quieras.", 5)
 
-                                    com.getkeepsafe.taptargetview.TapTargetSequence(this@InicioActivity)
+                                    TapTargetSequence(this@InicioActivity)
                                         .targets(t2, t3, t4, t5)
-                                        .listener(object : com.getkeepsafe.taptargetview.TapTargetSequence.Listener {
+                                        .listener(object : TapTargetSequence.Listener {
                                             override fun onSequenceFinish() {
-                                                snack.dismiss()
+                                                // fin: limpiar todo
+                                                tourSnack?.dismiss()
+                                                cancelTourThread()
                                                 drawer.closeDrawers()
                                                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                                                 prefs().edit().putBoolean("tutorial_inicio_visto", true).apply()
@@ -253,18 +254,22 @@ class InicioActivity : AppCompatActivity() {
                                                     .setNegativeButton("Quedarme aquí", null)
                                                     .show()
                                             }
-                                            override fun onSequenceStep(lastTarget: com.getkeepsafe.taptargetview.TapTarget?, targetClicked: Boolean) {}
-                                            override fun onSequenceCanceled(lastTarget: com.getkeepsafe.taptargetview.TapTarget?) {
-                                                snack.dismiss()
+                                            override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {}
+                                            override fun onSequenceCanceled(lastTarget: TapTarget?) {
+                                                // cancelado por el usuario (tap fuera o botón)
+                                                tourSnack?.dismiss()
+                                                cancelTourThread()
                                                 drawer.closeDrawers()
                                                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                                             }
                                         })
                                         .start()
-                                }, 180) // pequeño delay para asegurar medición del menú
+                                }, 180)
                             }
-                            override fun onTargetCancel(view: com.getkeepsafe.taptargetview.TapTargetView?) {
-                                snack.dismiss()
+                            override fun onTargetCancel(view: TapTargetView?) {
+                                // cancelado el primer paso
+                                tourSnack?.dismiss()
+                                cancelTourThread()
                                 drawer.closeDrawers()
                                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                             }
@@ -284,7 +289,7 @@ class InicioActivity : AppCompatActivity() {
         fun targetMenuItem(itemId: Int, title: String, desc: String, stepId: Int): TapTarget {
             val itemView = nav.findViewById<View>(itemId)
             return if (itemView != null) {
-                val bounds = rectWithOffsetX(itemView, offsetXDp = -12) // mueve un poco a la izquierda
+                val bounds = rectWithOffsetX(itemView, offsetXDp = -12)
                 TapTarget.forBounds(bounds, title, desc)
                     .outerCircleColorInt(if (stepId % 2 == 0) MH_CELESTE else MH_LILA)
                     .targetCircleColorInt(if (stepId % 2 == 0) MH_LILA else MH_CELESTE)
@@ -292,7 +297,7 @@ class InicioActivity : AppCompatActivity() {
                     .descriptionTextColorInt(MH_TEXT)
                     .drawShadow(true)
                     .transparentTarget(true)
-                    .cancelable(false)   // no cancelar tocando fuera
+                    .cancelable(false)
                     .id(stepId)
                     .targetRadius(34)
             } else {
@@ -319,6 +324,7 @@ class InicioActivity : AppCompatActivity() {
             .listener(object : TapTargetSequence.Listener {
                 override fun onSequenceFinish() {
                     tourSnack?.dismiss()
+                    cancelTourThread()
                     drawer.closeDrawers()
                     drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                     prefs().edit().putBoolean("tutorial_inicio_visto", true).apply()
@@ -336,6 +342,7 @@ class InicioActivity : AppCompatActivity() {
                 override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) { /* no-op */ }
                 override fun onSequenceCanceled(lastTarget: TapTarget?) {
                     tourSnack?.dismiss()
+                    cancelTourThread()
                     drawer.closeDrawers()
                     drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 }
@@ -352,7 +359,6 @@ class InicioActivity : AppCompatActivity() {
 
     private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
 
-    /** Rect del item con desplazamiento horizontal (negativo = hacia la izquierda) */
     private fun rectWithOffsetX(v: View, offsetXDp: Int): Rect {
         val r = v.asRectInWindow()
         val dx = offsetXDp.dp()
@@ -366,5 +372,48 @@ class InicioActivity : AppCompatActivity() {
             .make(root, "Tour en progreso", Snackbar.LENGTH_INDEFINITE)
             .setAction("Cancelar") { onCancel() }
         tourSnack?.show()
+    }
+
+    // ========= AÑADIDO: IMPLEMENTACIÓN DE THREAD PARA EL “TOUR/PROCESO” =========
+    private fun startTourThread() {
+        if (tourRunning) return
+        tourRunning = true
+
+        tourThread = Thread {
+            try {
+                val total = 20
+                for (step in 1..total) {
+                    if (!tourRunning) break
+                    // Simula trabajo (no bloquea UI)
+                    Thread.sleep(350)
+
+                    // Feedback no intrusivo (opcional): actualiza título o muestra snack/Toast
+                    runOnUiThread {
+                        // Puedes cambiar esto por actualizar algún TextView o barra en un fragment
+                        if (step % 5 == 0) {
+                            // Snackbar ya está; opcionalmente podrías actualizar texto:
+                            tourSnack?.setText("Tour en progreso • ${(step * 100) / total}%")
+                        }
+                    }
+                }
+            } catch (_: InterruptedException) {
+                // cancelado
+            } finally {
+                runOnUiThread {
+                    // Al terminar o cancelar, limpiar
+                    tourRunning = false
+                    tourSnack?.dismiss()
+                    // OJO: NO desbloqueamos drawer aquí porque eso lo maneja
+                    // el fin/cancel del TapTargetSequence (para mantener sincronía visual)
+                }
+            }
+        }.also { it.start() }
+    }
+
+    private fun cancelTourThread() {
+        tourRunning = false
+        tourThread?.interrupt()
+        tourThread = null
+        tourSnack?.dismiss()
     }
 }

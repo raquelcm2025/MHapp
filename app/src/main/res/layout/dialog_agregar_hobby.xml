@@ -1,26 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilHobby"
-            android:layout_width="match_parent"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Nuevo hobby">
+            android:layout_weight="1"
+            android:hint="Nuevo hobby"
+            app:boxBackgroundMode="outline"
+            app:endIconMode="clear_text">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etHobby"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:imeOptions="actionDone"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGuardarHobby"
-            android:layout_width="match_parent"
+            android:id="@+id/btnHistorial"
+            android:backgroundTint="@color/azul_claro"
+            android:textColor="@color/negro"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/historial"
+            android:textSize="@dimen/spacing_12"
+            app:icon="@drawable/ic_historial"
+            app:iconSize="24dp"
+            app:iconTint="@color/negro"
+            android:contentDescription="Ver historial"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2">
+
+}        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardarHobby"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
             android:text="Guardar"
-            android:layout_marginTop="12dp"/>
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            app:iconTint="@color/blanco"
+            android:backgroundTint="@color/magenta_claro"
+            android:gravity="center"
+            app:icon="@drawable/ic_guardar"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconSize="20dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelarHobby"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Cancelar"
+            android:textAllCaps="false"
+            android:gravity="center"
+            app:icon="@android:drawable/ic_menu_close_clear_cancel"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconSize="20dp"/>
+    </LinearLayout>
+
 </LinearLayout>
+

@@ -2,117 +2,151 @@ package com.example.myhobbiesapp.data.dao
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import com.example.myhobbiesapp.data.database.AppDatabaseHelper
 import com.example.myhobbiesapp.data.entity.Hobby
 
 class HobbyDAO(context: Context) {
     private val dbh = AppDatabaseHelper(context)
 
-    // Utilidades
-    private fun Cursor.getIntSafe(col: String): Int {
-        val i = getColumnIndex(col); return if (i != -1) getInt(i) else 0
+    private inline fun <T> read(block: (SQLiteDatabase) -> T): T {
+        val db = dbh.readableDatabase
+        return try { block(db) } finally { db.close() }
     }
-    private fun Cursor.getStringSafe(col: String): String {
-        val i = getColumnIndex(col); return if (i != -1) getString(i) ?: "" else ""
+    private inline fun <T> write(block: (SQLiteDatabase) -> T): T {
+        val db = dbh.writableDatabase
+        return try { block(db) } finally { db.close() }
     }
 
-    /** Crea o devuelve el id de un hobby por nombre (idempotente) */
-    fun getOrCreateByName(nombre: String): Int {
+    // === CRUD Hobby ===
+    fun getIdByName(nombre: String): Int = read { db ->
+        db.rawQuery(
+            "SELECT id_hobby FROM hobby WHERE LOWER(nombre)=LOWER(?)",
+            arrayOf(nombre.trim())
+        ).use { c -> if (c.moveToFirst()) c.getInt(0) else -1 }
+    }
+
+    fun getOrCreateByName(nombre: String): Int = write { db ->
         val name = nombre.trim()
-        val db = dbh.writableDatabase
         db.rawQuery("SELECT id_hobby FROM hobby WHERE nombre=?", arrayOf(name)).use { c ->
-            if (c.moveToFirst()) {
-                val id = c.getInt(0)
-                db.close()
-                return id
-            }
+            if (c.moveToFirst()) return@write c.getInt(0)
         }
         val v = ContentValues().apply { put("nombre", name) }
-        val rowId = db.insert("hobby", null, v) // nombre es UNIQUE
-        db.close()
-        return rowId.toInt()
+        db.insert("hobby", null, v).toInt()
     }
 
-    /** Devuelve todos los hobbies (sin filtrar por usuario) */
-    fun getAll(): List<Hobby> {
-        val db = dbh.readableDatabase
-        val list = mutableListOf<Hobby>()
-        db.rawQuery("SELECT id_hobby, nombre FROM hobby ORDER BY nombre", null).use { c ->
-            if (c.moveToFirst()) {
-                do {
-                    list.add(
-                        Hobby(
-                            id = c.getInt(0),
-                            nombre = c.getString(1),
-                            amigos = 0
-                        )
-                    )
-                } while (c.moveToNext())
-            }
+    fun getAll(): List<Hobby> = read { db ->
+        val lista = mutableListOf<Hobby>()
+        db.rawQuery(
+            "SELECT id_hobby, nombre FROM hobby ORDER BY nombre COLLATE NOCASE",
+            null
+        ).use { c ->
+            if (c.moveToFirst()) do {
+                lista.add(Hobby(id = c.getInt(0), nombre = c.getString(1)))
+            } while (c.moveToNext())
         }
-        db.close()
-        return list
+        lista
     }
 
-    /** Vincula un hobby a un usuario (ignora si ya existe) */
-    fun linkUsuarioHobby(idUsuario: Int, idHobby: Int): Int {
-        val db = dbh.writableDatabase
+    // === Relación usuario_hobby ===
+    fun linkUsuarioHobby(idUsuario: Int, idHobby: Int): Boolean = write { db ->
         val v = ContentValues().apply {
             put("id_usuario", idUsuario)
             put("id_hobby", idHobby)
         }
-        // 4 = CONFLICT_IGNORE
-        val rowId = db.insertWithOnConflict("usuario_hobby", null, v, 4)
-        db.close()
-        return if (rowId == -1L) 0 else 1
+        val rowId = db.insertWithOnConflict(
+            "usuario_hobby", null, v, SQLiteDatabase.CONFLICT_IGNORE
+        )
+        rowId != -1L
     }
 
-    /** ❗ Desvincula un hobby de un usuario (ESTE ES EL QUE TE FALTA) */
-    fun unlinkUsuarioHobby(idUsuario: Int, idHobby: Int): Int {
-        val db = dbh.writableDatabase
-        val rows = db.delete(
+    fun unlinkUsuarioHobby(idUsuario: Int, idHobby: Int): Int = write { db ->
+        db.delete(
             "usuario_hobby",
             "id_usuario=? AND id_hobby=?",
             arrayOf(idUsuario.toString(), idHobby.toString())
         )
-        db.close()
-        return rows
     }
 
-    /**
-     * Lista hobbies del usuario con conteo de "amigos" (otros usuarios que también lo tienen).
-     * Devuelve List<Hobby> con (id, nombre, amigos)
-     */
-    fun listByUser(idUsuario: Int): List<Hobby> {
-        val sql = """
-            SELECT DISTINCT h.id_hobby, h.nombre,
-                   (SELECT COUNT(*) 
-                      FROM usuario_hobby uh2
-                      WHERE uh2.id_hobby = h.id_hobby
-                        AND uh2.id_usuario <> ?) AS amigos
-            FROM hobby h
-            INNER JOIN usuario_hobby uh ON uh.id_hobby = h.id_hobby
-            WHERE uh.id_usuario = ?
-            ORDER BY h.nombre
-        """.trimIndent()
+    fun unlinkUsuarioHobbyByName(idUsuario: Int, nombreHobby: String): Int {
+        val idH = getIdByName(nombreHobby)
+        if (idH <= 0) return 0
+        return unlinkUsuarioHobby(idUsuario, idH)
+    }
 
-        val db = dbh.readableDatabase
-        val list = mutableListOf<Hobby>()
-        db.rawQuery(sql, arrayOf(idUsuario.toString(), idUsuario.toString())).use { c ->
+
+    fun updateHobbyName(idHobby: Int, nuevoNombre: String): Int = write { db ->
+        val v = ContentValues().apply { put("nombre", nuevoNombre.trim()) }
+        db.update("hobby", v, "id_hobby=?", arrayOf(idHobby.toString()))
+    }
+
+    /** Evita duplicados visuales/errores de UI: */
+    fun existsUsuarioHobby(idUsuario: Int, idHobby: Int): Boolean = read { db ->
+        db.rawQuery(
+            "SELECT 1 FROM usuario_hobby WHERE id_usuario=? AND id_hobby=? LIMIT 1",
+            arrayOf(idUsuario.toString(), idHobby.toString())
+        ).use { it.moveToFirst() }
+    }
+
+    /** Limpia hobbies huérfanos (nadie los usa). Llamar si quieres mantener tabla prolija. */
+    fun deleteOrphanHobbies(): Int = write { db ->
+        db.delete(
+            "hobby",
+            "id_hobby NOT IN (SELECT DISTINCT id_hobby FROM usuario_hobby)",
+            null
+        )
+    }
+
+    /** NUEVO: lista solo nombres de hobbies por usuario */
+    fun listHistorialByUserNames(idUsuario: Int): List<String> = read { db ->
+        val lista = mutableListOf<String>()
+        db.rawQuery(
+            """
+        SELECT h.nombre
+        FROM hobby h
+        JOIN usuario_hobby uh ON uh.id_hobby = h.id_hobby
+        WHERE uh.id_usuario = ?
+        ORDER BY h.nombre COLLATE NOCASE
+        """.trimIndent(),
+            arrayOf(idUsuario.toString())
+        ).use { c ->
             if (c.moveToFirst()) {
-                do {
-                    list.add(
-                        Hobby(
-                            id = c.getIntSafe("id_hobby"),
-                            nombre = c.getStringSafe("nombre"),
-                            amigos = c.getIntSafe("amigos")
-                        )
-                    )
-                } while (c.moveToNext())
+                do lista.add(c.getString(0)) while (c.moveToNext())
             }
         }
-        db.close()
-        return list
+        lista
     }
+
+    // HobbyDAO — metodo con IDs REALES del usuario
+    fun listUserHobbies(idUsuario: Int): List<Hobby> = read { db ->
+        val lista = mutableListOf<Hobby>()
+        db.rawQuery(
+            """
+        SELECT h.id_hobby, h.nombre
+        FROM hobby h
+        JOIN usuario_hobby uh ON uh.id_hobby = h.id_hobby
+        WHERE uh.id_usuario = ?
+        ORDER BY h.nombre COLLATE NOCASE
+        """.trimIndent(),
+            arrayOf(idUsuario.toString())
+        ).use { c ->
+            if (c.moveToFirst()) {
+                do { lista.add(Hobby(id = c.getInt(0), nombre = c.getString(1))) }
+                while (c.moveToNext())
+            }
+        }
+        lista
+    }
+
+
+    /* ======= MÉTODOS LEGACY PARA EVITAR ERRORES ======= */
+
+    fun listByUser(idUsuario: Int): List<Hobby> = listUserHobbies(idUsuario)
+
+
+    fun listHistorialByUser(idUsuario: Int): List<Pair<String, Int>> {
+        val nombres = listHistorialByUserNames(idUsuario)
+        return nombres.map { it to 0 }
+    }
+
 }

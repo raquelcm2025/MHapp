@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="Registro de un nuevo usuario"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:text="MyHobbiesApp"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 

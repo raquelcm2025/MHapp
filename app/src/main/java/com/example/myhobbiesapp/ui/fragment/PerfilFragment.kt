@@ -13,6 +13,7 @@ import com.example.myhobbiesapp.adapter.GaleriaAdapter
 import com.example.myhobbiesapp.data.dao.FotoLocalDAO
 import com.example.myhobbiesapp.data.dao.HobbyDAO
 import com.example.myhobbiesapp.data.dao.UsuarioDAO
+import com.example.myhobbiesapp.data.entity.FotoLocal
 import com.example.myhobbiesapp.databinding.FragmentPerfilBinding
 import com.example.myhobbiesapp.ui.activity.AccesoActivity
 import com.example.myhobbiesapp.ui.dialog.DialogAgregarHobby
@@ -21,39 +22,33 @@ import com.example.myhobbiesapp.ui.dialog.SimpleRenameHobbySheet
 import com.example.myhobbiesapp.util.SessionManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
+import androidx.lifecycle.lifecycleScope
+import com.example.myhobbiesapp.data.entity.Hobby
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PerfilFragment : Fragment() {
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
-
     private val galeriaAdapter by lazy { GaleriaAdapter() }
 
-    // Picker con persistencia de permiso (ACTION_OPEN_DOCUMENT)
     private val pickImage = registerForActivityResult(OpenDocument()) { uri ->
         val u = usuarioActual() ?: return@registerForActivityResult
         if (uri != null) {
-            // Persistir permiso de lectura (para que no crashee luego)
             val flags = (Intent.FLAG_GRANT_READ_URI_PERMISSION)
             requireContext().contentResolver.takePersistableUriPermission(uri, flags)
 
-            FotoLocalDAO(requireContext()).insert(
-                com.example.myhobbiesapp.data.entity.FotoLocal(
-                    userId = u.id,
-                    uri = uri.toString()
-                )
-            )
-            cargarGaleria(u.id)
+            lifecycleScope.launch(Dispatchers.IO) {
+                FotoLocalDAO(requireContext()).insert(FotoLocal(userId = u.id, uri = uri.toString()))
+                withContext(Dispatchers.Main) { cargarGaleria(u.id) }
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        s: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -61,21 +56,16 @@ class PerfilFragment : Fragment() {
     override fun onViewCreated(v: View, s: Bundle?) {
         super.onViewCreated(v, s)
 
-        // Galería horizontal
         binding.rvGaleria.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvGaleria.adapter = galeriaAdapter
 
-        // Cargar datos y hobbies al entrar
         cargarPerfilYHobbies()
 
-        // Refrescar cuando cambien hobbies
         parentFragmentManager.setFragmentResultListener(
-            DialogAgregarHobby.RESULT_HOBBIES_CHANGED,
-            viewLifecycleOwner
+            DialogAgregarHobby.RESULT_HOBBIES_CHANGED, viewLifecycleOwner
         ) { _, _ -> cargarPerfilYHobbies() }
 
-        // Añadir / Editar hobbies
         binding.btnEditarHobbies.setOnClickListener {
             usuarioActual()?.let { u ->
                 DialogAgregarHobby.newInstance(u.id)
@@ -83,24 +73,18 @@ class PerfilFragment : Fragment() {
             }
         }
 
-        // Editar perfil
         binding.btnEditarPerfil.setOnClickListener {
             DialogEditarPerfil.newInstance().show(parentFragmentManager, "editar_perfil")
         }
 
-        // Si el diálogo de edición dispara "perfil_editado"
-        parentFragmentManager.setFragmentResultListener(
-            "perfil_editado",
-            viewLifecycleOwner
-        ) { _, _ -> cargarPerfilYHobbies() }
+        parentFragmentManager.setFragmentResultListener("perfil_editado", viewLifecycleOwner) { _, _ ->
+            cargarPerfilYHobbies()
+        }
 
-        // Agregar foto
         binding.btnAgregarFoto.setOnClickListener {
-            // filtra solo imágenes
             pickImage.launch(arrayOf("image/*"))
         }
 
-        // Cerrar sesión
         binding.btnCerrarSesion.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Cerrar sesión")
@@ -115,7 +99,6 @@ class PerfilFragment : Fragment() {
         }
     }
 
-    /** Carga usuario + hobbies; y si hay usuario, carga su galería */
     private fun cargarPerfilYHobbies() {
         val u = usuarioActual()
         if (u != null) {
@@ -145,65 +128,76 @@ class PerfilFragment : Fragment() {
     }
 
     private fun cargarGaleria(userId: Int) {
-        val fotos = FotoLocalDAO(requireContext()).listByUser(userId).map { it.uri }
-
-        if (fotos.isEmpty()) {
-            binding.tvEmptyGaleria.visibility = View.VISIBLE
-            binding.rvGaleria.visibility = View.GONE
-            galeriaAdapter.submit(emptyList())
-        } else {
-            binding.tvEmptyGaleria.visibility = View.GONE
-            binding.rvGaleria.visibility = View.VISIBLE
-            galeriaAdapter.submit(fotos)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val fotos = FotoLocalDAO(requireContext()).listByUser(userId).map { it.uri }
+            withContext(Dispatchers.Main) {
+                if (fotos.isEmpty()) {
+                    binding.tvEmptyGaleria.visibility = View.VISIBLE
+                    binding.rvGaleria.visibility = View.GONE
+                } else {
+                    binding.tvEmptyGaleria.visibility = View.GONE
+                    binding.rvGaleria.visibility = View.VISIBLE
+                }
+                galeriaAdapter.submit(fotos)
+            }
         }
     }
 
-    /** Pinta chips de hobbies del usuario y habilita popup Editar/Eliminar */
     private fun renderHobbies(userId: Int) {
-        val dao = HobbyDAO(requireContext())
-        val hobbies = dao.listByUser(userId)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dao = HobbyDAO(requireContext())
+            val hobbies = dao.listByUser(userId).distinctBy { it.nombre.lowercase() }
 
-        binding.chipsHobbies.removeAllViews()
+            withContext(Dispatchers.Main) {
+                binding.chipsHobbies.removeAllViews()
 
-        val unicos = hobbies.distinctBy { it.nombre.trim().lowercase() }
-        if (unicos.isEmpty()) {
-            addChip("Sin hobbies aún")
-            return
-        }
+                if (hobbies.isEmpty()) {
+                    addChip("Sin hobbies aún")
+                    return@withContext
+                }
 
-        unicos.forEach { h ->
-            val chip = Chip(requireContext()).apply {
-                text = h.nombre
-                isCheckable = false
-                isClickable = true
-                isCloseIconVisible = false
-            }
-            chip.setOnClickListener {
-                PopupMenu(requireContext(), chip).apply {
-                    menu.add("Editar")
-                    menu.add("Eliminar")
-                    setOnMenuItemClickListener { item ->
-                        when (item.title?.toString()) {
-                            "Editar" -> {
-                                SimpleRenameHobbySheet
-                                    .newInstance(userId, h.id, h.nombre)
-                                    .show(parentFragmentManager, "rename_hobby")
-                            }
-                            "Eliminar" -> {
-                                dao.unlinkUsuarioHobby(userId, h.id)
-                                parentFragmentManager.setFragmentResult(
-                                    DialogAgregarHobby.RESULT_HOBBIES_CHANGED,
-                                    Bundle()
-                                )
-                            }
-                        }
-                        true
+                hobbies.forEach { h ->
+                    val chip = Chip(requireContext()).apply {
+                        text = h.nombre
+                        isCheckable = false
+                        isClickable = true
+                        isCloseIconVisible = false
                     }
-                }.show()
+                    chip.setOnClickListener {
+                        PopupMenu(requireContext(), chip).apply {
+                            menu.add("Editar")
+                            menu.add("Eliminar")
+                            setOnMenuItemClickListener { item ->
+                                when (item.title.toString()) {
+                                    "Editar" -> {
+                                        SimpleRenameHobbySheet
+                                            .newInstance(userId, h.id, h.nombre)
+                                            .show(parentFragmentManager, "rename_hobby")
+                                    }
+                                    "Eliminar" -> {
+                                        // En PerfilFragment, dentro del PopupMenu -> "Eliminar":
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            // RECOMENDADO: si ya usas listUserHobbies() (IDs reales)
+                                            HobbyDAO(requireContext()).unlinkUsuarioHobby(
+                                                userId,
+                                                h.id
+                                            )
+
+                                            withContext(Dispatchers.Main) { renderHobbies(userId) } // <-- refresca chips
+
+                                        }
+                                    }
+                                }
+                                true
+                            }
+                        }.show()
+                    }
+                    binding.chipsHobbies.addView(chip)
+                }
             }
-            binding.chipsHobbies.addView(chip)
         }
     }
+
 
     private fun addChip(text: String) {
         val chip = Chip(requireContext()).apply {

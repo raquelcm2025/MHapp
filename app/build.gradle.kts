@@ -39,37 +39,37 @@ android {
     kotlinOptions { jvmTarget = "17" }
 }
 
-
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("androidx.fragment:fragment-ktx:1.8.4")
+    // ---- UI ----
+    implementation(libs.material)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+    // ---- NAVEGACIÓN (Para moverte entre Fragments) ----
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // ---- CICLO DE VIDA & HILOS (ViewModel, Coroutines) ----
     implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.android) // Esta es tu librería de Corrutinas
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    implementation("com.google.android.material:material:1.10.0")
-
-    implementation("androidx.work:work-runtime:2.9.0")
+    // ---- LIBRERÍAS DE RED (Para tu API REST) ----
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    // ---- LIBRERÍAS DE UI EXTRA (Animaciones y Tutorial) ----
     implementation("com.airbnb.android:lottie:6.4.0")
-    //libreria para showcaseview - tutorial
-    //implementation("com.github.amlcurran.showcaseview:library:5.4.3")
-    //libreria de tutorial moderno
     implementation("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
-    //otras librerias
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.cardview)
+
+    // ---- TESTING (Pruebas) ----
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
 

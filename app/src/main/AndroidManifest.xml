@@ -28,9 +28,9 @@
             android:exported="true" />
         <activity android:name=".ui.activity.RegistroActivity"
             android:exported="true"/>
+        <activity android:name=".ui.activity.PerfilActivity"
+            android:exported="true"/>
 
-        <activity android:name=".ui.activity.ListaHobbiesActivity"
-            android:exported="false"/>
         <activity android:name=".ui.activity.ChatActivity"
             android:exported="false" />
 
