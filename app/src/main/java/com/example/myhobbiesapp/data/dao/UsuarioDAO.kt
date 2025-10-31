@@ -130,4 +130,5 @@ class UsuarioDAO(context: Context) {
         db.close()
         return rows
     }
+
 }

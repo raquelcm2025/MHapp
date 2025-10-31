@@ -20,5 +20,6 @@
     <string name="agregar_foto">Agregar foto</string>
     <string name="eliminar">Eliminar</string>
     <string name="opciones">Opciones</string>
+    <string name="historial">Ver historial</string>
 
 </resources>
