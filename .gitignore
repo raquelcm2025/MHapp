@@ -16,3 +16,6 @@ local.properties
 mhapp.zip
 *.hprof
 *.zip
+*.sqlite
+*.sqlite3
+*.db
