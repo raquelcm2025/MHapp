@@ -2,27 +2,29 @@
 
 Aplicación Android para gestionar hobbies, explorar perfiles de otros usuarios y editar mi perfil.
 
-📜 Funcionalidades:
+✨ Funcionalidades
+- Validación de correo y dominio permitido (`@mh.pe`, `@gmail.com`, `@hotmail.com`)
+- Registro con aceptación de Términos & Condiciones
+- Explora: lista de personas y perfiles
+- Perfil: datos personales, hobbies, galería, cerrar sesión
+- Galería con imágenes de hobbies en el perfil
+- Hobbies: agregar, listar y eliminar
 
-- Validación de correo y dominio permitido (@mh.pe, @gmail.com, @hotmail.com)
-- Registro de usuario con la confirmación de Términos & Condiciones
-- Lista de personas en la sección Explora
-- Perfil personal con datos, hobbies, galería y opción para cerrar sesión
-- Galería fija con imágenes de hobbies en el perfil
-- Gestión completa de hobbies: agregar, listar y eliminar
-- Historial de hobbies
+🧭 Flujo principal
+Acceso → valida correo/clave → guarda sesión  
+Inicio → saludo + botón (Tour interactivo)  
+Explora → lista de perfiles nuevos en la app 
+Solicitudes →  aceptar o denegar
+Chat → lista de amigos con quien chatear
+Perfil → ver/editar datos y hobbies, cerrar sesión
 
-🧭Flujo principal:
+🗺️ Roadmap
+- Subida de 3 fotos a galería (Perfil)
+- Notificaciones para llamar la ATENCIÓN al USUARIO con Worker (WorkManager)
+- Autenticación y base de datos (Firebase)
 
-- Acceso → valida correo y clave → guarda sesión (SesionActiva)
-- Inicio → saludo personalizado + botón para explorar
-- Explora → lista de perfiles de otros usuarios
-- Chat → lista de amigos para chatear
-- Perfil → ver y editar datos, editar hobbies y cerrar sesión
-
-
-🚀 Próximas mejoras:
-
-- Subida de fotos reales al perfil
-- Permitir agregar más imágenes a la galería
-- Estadísticas de hobbies más populares
+🛠️ Stack
+- Persistencia: SQLite (galería) y Firestore
+- Autenticación: validación por dominio permitido
+- Notificaciones / Jobs: WorkManager
+- Firebase Auth y Firebase Database.
