@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitulo">
 
 
-    <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -61,51 +61,51 @@
                 app:cardElevation="8dp"
                 app:cardCornerRadius="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilUsuario"
-                    style="@style/Theme.MyHobbies.TextFields"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo electrónico"
-                    app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tietUsuario"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilUsuario"
+                        style="@style/Theme.MyHobbies.TextFields"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:textColor="@color/negro"
-                        android:singleLine="true"
-                        android:imeOptions="actionNext"
-                        android:autofillHints="emailAddress"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:hint="Correo electrónico"
+                        app:helperText="Usa @mh.pe, @gmail.com o @hotmail.com">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilClave"
-                    style="@style/Theme.MyHobbies.TextFields"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="Contraseña"
-                    app:endIconMode="password_toggle">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tietUsuario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:textColor="@color/negro"
+                            android:singleLine="true"
+                            android:imeOptions="actionNext"
+                            android:autofillHints="emailAddress"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tietClave"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilClave"
+                        style="@style/Theme.MyHobbies.TextFields"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/negro"
-                        android:singleLine="true"
-                        android:inputType="textPassword"/>
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                        android:layout_marginTop="12dp"
+                        android:hint="Contraseña"
+                        app:endIconMode="password_toggle">
 
-        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tietClave"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/negro"
+                            android:singleLine="true"
+                            android:inputType="textPassword"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnInicio"
@@ -113,15 +113,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Iniciar sesión"
-
                 android:layout_marginTop="32dp"/>
+            <TextView
+                android:id="@+id/tvDivider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="o continúa con"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@android:color/black" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGoogle"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="48dp"
+                android:textAllCaps="false"
+                android:textColor="@color/gris"
+                android:text="Google"
+                app:icon="@mipmap/ic_google"
+                app:iconTint="@null"
+                app:iconPadding="12dp"
+                app:iconSize="20dp"
+                app:iconGravity="textStart"
+                app:strokeWidth="1dp"/>
+
 
             <TextView
                 android:id="@+id/tvOlvidarClave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="¿Olvidaste tu contraseña?"
-                android:layout_marginTop="16dp" android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorPrimary"/>
 
             <LinearLayout
@@ -148,7 +174,15 @@
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"/>
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

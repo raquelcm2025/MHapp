@@ -3,62 +3,31 @@ package com.example.myhobbiesapp.data.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+
 class AppDatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, "myhobbies.db", null, 2) {
+    SQLiteOpenHelper(context, "myhobbies.db", null, 3) {
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("""
-            CREATE TABLE IF NOT EXISTS usuario(
-              id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
-              nombre TEXT NOT NULL,
-              apellido TEXT NOT NULL,
-              correo TEXT NOT NULL UNIQUE,
-              celular TEXT NOT NULL,
-              clave TEXT NOT NULL,
-              genero TEXT,
-              acepta_terminos INTEGER NOT NULL DEFAULT 0,
-              foto INTEGER NOT NULL DEFAULT 0
-            );
-        """.trimIndent())
-
-        db.execSQL("""
-            CREATE TABLE IF NOT EXISTS hobby(
-            id_hobby INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre   TEXT NOT NULL UNIQUE
-            );
-
-
-
-        """.trimIndent())
-
-        db.execSQL("""
-              CREATE TABLE IF NOT EXISTS usuario_hobby(
-              id_usuario INTEGER NOT NULL,
-              id_hobby   INTEGER NOT NULL,
-              PRIMARY KEY(id_usuario, id_hobby),
-              FOREIGN KEY(id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
-              FOREIGN KEY(id_hobby)   REFERENCES hobby(id_hobby)   ON DELETE CASCADE
-            );
-        """.trimIndent())
-        db.execSQL("""
-           CREATE TABLE IF NOT EXISTS foto_local(
-              id        INTEGER PRIMARY KEY AUTOINCREMENT,
-              user_id   INTEGER NOT NULL,
-              uri       TEXT    NOT NULL,
-              created_at INTEGER NOT NULL,
-              FOREIGN KEY(user_id) REFERENCES usuario(id_usuario) ON DELETE CASCADE
-            );
-        
-
-
-
-        """.trimIndent())
-
-
-        db.execSQL("INSERT OR IGNORE INTO hobby(nombre) VALUES ('Cine'),('Música'),('Natación'),('Fútbol'),('Videojuegos');")
+        crearTablaFotos(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 2) onCreate(db)
+        db.execSQL("DROP TABLE IF EXISTS foto_local")
+        db.execSQL("DROP TABLE IF EXISTS usuario_hobby")
+        db.execSQL("DROP TABLE IF EXISTS hobby")
+        db.execSQL("DROP TABLE IF EXISTS usuario")
+
+        crearTablaFotos(db)
+    }
+
+    private fun crearTablaFotos(db: SQLiteDatabase) {
+        db.execSQL("""
+           CREATE TABLE IF NOT EXISTS foto_local(
+              id        INTEGER PRIMARY KEY AUTOINCREMENT,
+              user_id   TEXT    NOT NULL,  
+              uri       TEXT    NOT NULL,
+              created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+            );
+        """.trimIndent())
     }
 }

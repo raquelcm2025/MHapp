@@ -1,105 +1,117 @@
 package com.example.myhobbiesapp.ui.activity
 
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.data.repo.ChatMessage
-import com.example.myhobbiesapp.data.repo.ChatsRepo
-import com.example.myhobbiesapp.sesion.SesionActiva
-import com.example.myhobbiesapp.util.CurrentUser
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
-class ChatActivity : AppCompatActivity(R.layout.activity_chat) {
+data class ChatMsg(
+    val fromUid: String = "",
+    val text: String = "",
+    val ts: Long = System.currentTimeMillis()
+)
 
+class ChatActivity : AppCompatActivity() {
 
-    private lateinit var rvMensajes: RecyclerView
-    private lateinit var etMensaje: EditText
-    private lateinit var btnEnviar: Button
-    private lateinit var tvTitulo: TextView
+    private lateinit var rv: RecyclerView
+    private lateinit var et: EditText
+    private lateinit var btn: ImageButton
 
-    private var chatId: Int = -1
-    private val listaMensajes = mutableListOf<ChatMessage>()
+    private val auth by lazy { FirebaseAuth.getInstance() }
+    private lateinit var chatId: String
+    private lateinit var refMsgs: DatabaseReference
+
+    private val data = mutableListOf<ChatMsg>()
+    private lateinit var adapter: SimpleChatAdapter
+    private var listener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_chat)
 
-        rvMensajes = findViewById(R.id.rvMensajes)
-        etMensaje  = findViewById(R.id.etMensaje)
-        btnEnviar  = findViewById(R.id.btnEnviar)
-        tvTitulo   = findViewById(R.id.tvTituloChat)
-
-        chatId = intent.getIntExtra("chatId", -1)
-
-        // En CHATS todos ya son amigos
-        val chat = ChatsRepo.get(chatId)
-        tvTitulo.text = chat?.let { "Chateando con ${it.titulo}" } ?: "Chat"
-
-        // Cargar historial persistido en memoria
-        listaMensajes.clear()
-        listaMensajes.addAll(ChatsRepo.getMensajes(chatId))
-
-        rvMensajes.layoutManager = LinearLayoutManager(this)
-        rvMensajes.adapter = object : RecyclerView.Adapter<SimpleVH>() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleVH {
-                val v = layoutInflater.inflate(R.layout.item_chat_msg, parent, false)
-                return SimpleVH(v)
-            }
-            override fun onBindViewHolder(holder: SimpleVH, position: Int) {
-                val m = listaMensajes[position]
-                val tv = holder.itemView.findViewById<TextView>(R.id.tvMsg)
-                val btn = holder.itemView.findViewById<ImageButton>(R.id.btnBorrar)
-
-                val myId = SesionActiva.usuarioActual?.id
-                tv.text = if (m.autorId == myId)
-                    "Tú: ${m.texto}${if (m.hora.isNotBlank()) " (${m.hora})" else ""}"
-                else
-                    "${m.texto}${if (m.hora.isNotBlank()) " (${m.hora})" else ""}"
-
-                val soyYo = (m.autorId == myId)
-                btn.visibility = if (soyYo) View.VISIBLE else View.GONE
-                btn.setOnClickListener {
-                    val idx = holder.bindingAdapterPosition
-                    if (idx != RecyclerView.NO_POSITION) {
-                        // Elimina del repo y del listado
-                        ChatsRepo.eliminarMensaje(chatId, idx)
-                        listaMensajes.removeAt(idx)
-                        notifyItemRemoved(idx)
-                        Toast.makeText(this@ChatActivity, "Mensaje eliminado", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            override fun getItemCount() = listaMensajes.size
+        chatId = intent.getStringExtra("chatId") ?: run {
+            finish(); return
         }
 
-        btnEnviar.setOnClickListener {
-            val texto = etMensaje.text.toString()
-            if (texto.isEmpty()) return@setOnClickListener
+        rv = findViewById(R.id.rvChat)
+        et = findViewById(R.id.etMensaje)
+        btn = findViewById(R.id.btnEnviar)
 
-            val myId = SesionActiva.usuarioActual?.id
-            val hora = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-            val msg = ChatMessage(myId, texto, hora)
+        adapter = SimpleChatAdapter(data, me = auth.currentUser?.uid.orEmpty())
+        rv.layoutManager = LinearLayoutManager(this).apply { stackFromEnd = true }
+        rv.adapter = adapter
 
-            // Guarda en repo (para que persista al volver)
-            ChatsRepo.agregarMensaje(chatId, msg)
+        refMsgs = FirebaseDatabase.getInstance()
+            .getReference("chats")
+            .child(chatId)
+            .child("messages")
 
-            // Refleja en pantalla
-            listaMensajes.add(msg)
-            rvMensajes.adapter?.notifyItemInserted(listaMensajes.size - 1)
-            rvMensajes.scrollToPosition(listaMensajes.size - 1)
-            etMensaje.setText("")
+        listenMessages()
+
+        btn.setOnClickListener {
+            val txt = et.text.toString().trim()
+            val uid = auth.currentUser?.uid
+            if (txt.isEmpty() || uid == null) return@setOnClickListener
+            sendMessage(uid, txt)
         }
     }
 
-    class SimpleVH(v: View) : RecyclerView.ViewHolder(v)
+    private fun listenMessages() {
+        listener?.let { refMsgs.removeEventListener(it) }
+        listener = refMsgs.orderByChild("ts").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(s: DataSnapshot) {
+                data.clear()
+                for (c in s.children) {
+                    c.getValue(ChatMsg::class.java)?.let { data.add(it) }
+                }
+                adapter.notifyDataSetChanged()
+                rv.scrollToPosition((data.size - 1).coerceAtLeast(0))
+            }
+            override fun onCancelled(error: DatabaseError) { }
+        })
+    }
+
+    private fun sendMessage(fromUid: String, text: String) {
+        val msg = ChatMsg(fromUid = fromUid, text = text, ts = System.currentTimeMillis())
+        refMsgs.push().setValue(msg).addOnCompleteListener {
+            if (it.isSuccessful) et.setText("")
+            else Toast.makeText(this, "No se pudo enviar", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroy() {
+        listener?.let { refMsgs.removeEventListener(it) }
+        super.onDestroy()
+    }
+}
+
+class SimpleChatAdapter(
+    private val items: List<ChatMsg>,
+    private val me: String
+) : RecyclerView.Adapter<SimpleChatVH>() {
+    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): SimpleChatVH {
+        val v = android.view.LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_chat_msg, parent, false)
+        return SimpleChatVH(v)
+    }
+    override fun onBindViewHolder(h: SimpleChatVH, pos: Int) = h.bind(items[pos], me)
+    override fun getItemCount() = items.size
+}
+
+class SimpleChatVH(v: android.view.View) : RecyclerView.ViewHolder(v) {
+    private val tvMine: android.widget.TextView = v.findViewById(R.id.tvMine)
+    private val tvOther: android.widget.TextView = v.findViewById(R.id.tvOther)
+    fun bind(m: ChatMsg, me: String) {
+        val mine = m.fromUid == me
+        tvMine.text = if (mine) m.text else ""
+        tvMine.visibility = if (mine) android.view.View.VISIBLE else android.view.View.GONE
+        tvOther.text = if (!mine) m.text else ""
+        tvOther.visibility = if (!mine) android.view.View.VISIBLE else android.view.View.GONE
+    }
 }

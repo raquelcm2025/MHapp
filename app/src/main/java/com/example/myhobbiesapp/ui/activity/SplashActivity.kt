@@ -26,23 +26,20 @@ class SplashActivity : AppCompatActivity() {
         anim.repeatCount = 0
         anim.speed = 1.0f
 
-        // 1) Si la animación termina bien → avanzar
         anim.addAnimatorListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) { goNext() }
             override fun onAnimationCancel(animation: Animator) { goNext() }
         })
 
-        // 2) Fallback por si la animación no llama onAnimationEnd (máx. 5s)
         handler.postDelayed(fallback, 5000L)
 
         anim.playAnimation()
     }
 
     private fun goNext() {
-        if (launched) return          //  GUARDA CLAVE
+        if (launched) return
         launched = true
 
-        // Cancela fallback pendiente
         handler.removeCallbacks(fallback)
 
         val next = Intent(this, AccesoActivity::class.java)

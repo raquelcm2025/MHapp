@@ -28,6 +28,8 @@
             android:exported="true" />
         <activity android:name=".ui.activity.RegistroActivity"
             android:exported="true"/>
+        <activity android:name=".ui.activity.RestablecerClaveActivity"
+            android:exported="true"/>
         <activity android:name=".ui.activity.PerfilActivity"
             android:exported="true"/>
 

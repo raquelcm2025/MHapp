@@ -7,6 +7,8 @@
     <string name="menu_home">Inicio</string>
     <string name="menu_explora">Explora</string>
     <string name="menu_chats">Chats</string>
+    <string name="menu_solicitudes">Solicitudes</string>
+
     <string name="menu_perfil">Perfil</string>
 
     <!-- Botones -->
@@ -21,5 +23,10 @@
     <string name="eliminar">Eliminar</string>
     <string name="opciones">Opciones</string>
     <string name="historial">Ver historial</string>
+    <string name="default_web_client_id">YOUR_DEFAULT_WEB_CLIENT_ID</string>
+    <string name="sesion_sin_usuario">Sin sesión</string>
+    <string name="sesion_no_iniciada">Sesión no iniciada</string>
+    <string name="sin_fotos">Aún no agregas fotos</string>
+    <string name="sin_hobbies">Sin hobbies aún</string>
 
 </resources>

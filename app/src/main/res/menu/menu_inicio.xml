@@ -10,6 +10,10 @@
             android:title="Explora"
             android:icon="@drawable/explore" />
         <item
+            android:id="@+id/menu_solicitudes"
+            android:icon="@drawable/ic_agregar_persona"
+            android:title="@string/menu_solicitudes" />
+        <item
             android:id="@+id/menu_chats"
             android:title="Chats"
             android:icon="@drawable/chats" />

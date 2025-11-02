@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@android:color/white">
@@ -17,36 +17,54 @@
         android:textColor="@color/magenta_claro" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCelular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:hint="Celular (9 dígitos)"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCelular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Celular (9 dígitos)"
             android:inputType="phone"
             android:maxLength="9"
             android:digits="0123456789"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilClaveActual"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:hint="Nueva contraseña"
+        android:hint="Contraseña Actual (para confirmar)"
         app:endIconMode="password_toggle"
-        app:endIconTint="@color/gris">
+        app:endIconTint="@color/gris"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etClave"
+            android:id="@+id/etClaveActual"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:importantForAutofill="no"
-            android:autofillHints="" />
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilClaveNueva"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Nueva contraseña (mín. 6)"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/gris"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etClaveNueva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
 

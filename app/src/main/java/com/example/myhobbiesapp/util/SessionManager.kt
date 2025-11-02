@@ -6,18 +6,20 @@ object SessionManager {
     private const val PREFS = "mh_session"
     private const val KEY_EMAIL = "current_email"
 
-    fun saveCurrentEmail(ctx: Context, email: String) {
+    private fun prefs(ctx: Context) =
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().putString(KEY_EMAIL, email).apply()
+
+    fun setCurrentEmail(ctx: Context, email: String) {
+        prefs(ctx).edit().putString(KEY_EMAIL, email).apply()
     }
 
-    fun getCurrentEmail(ctx: Context): String? {
-        return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(KEY_EMAIL, null)
-    }
+    fun getCurrentEmail(ctx: Context): String? =
+        prefs(ctx).getString(KEY_EMAIL, null)
 
     fun clear(ctx: Context) {
-        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().clear().apply()
+        prefs(ctx).edit().remove(KEY_EMAIL).apply()
     }
+
+    fun saveCurrentEmail(ctx: Context, email: String) = setCurrentEmail(ctx, email)
+    fun getEmail(ctx: Context) = getCurrentEmail(ctx)
 }

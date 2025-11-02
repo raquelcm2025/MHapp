@@ -1,39 +1,35 @@
 package com.example.myhobbiesapp.adapter
 
 import android.net.Uri
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myhobbiesapp.R
 
-class GaleriaAdapter : RecyclerView.Adapter<GaleriaAdapter.VH>() {
-    private val data = mutableListOf<String>() // URIs en string
+class GaleriaAdapter : ListAdapter<String, GaleriaAdapter.VH>(DIFF) {
 
-    fun submit(list: List<String>) {
-        data.clear()
-        data.addAll(list)
-        notifyDataSetChanged()
-    }
-
-    override fun onCreateViewHolder(p: ViewGroup, vt: Int): VH {
-        val d = p.resources.displayMetrics.density
-        val size = (120 * d).toInt()
-        val margin = (8 * d).toInt()
-
-        val iv = ImageView(p.context).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(size, size).apply { rightMargin = margin }
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            clipToOutline = true
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<String>() {
+            override fun areItemsTheSame(a: String, b: String) = a == b
+            override fun areContentsTheSame(a: String, b: String) = a == b
         }
-        return VH(iv)
     }
 
-    override fun onBindViewHolder(h: VH, i: Int) {
-        val uri = Uri.parse(data[i])
-        (h.itemView as ImageView).setImageURI(uri)
+    inner class VH(v: View) : RecyclerView.ViewHolder(v) {
+        val iv: ImageView = v.findViewById(R.id.ivFotoMini)
     }
 
-    override fun getItemCount(): Int = data.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_foto_mini, parent, false)
+        return VH(v)
+    }
 
-    class VH(v: View) : RecyclerView.ViewHolder(v)
+    override fun onBindViewHolder(h: VH, pos: Int) {
+        val uriStr = getItem(pos)
+        h.iv.setImageURI(Uri.parse(uriStr)) // solo memoria local
+    }
 }

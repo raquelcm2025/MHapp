@@ -6,10 +6,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.myhobbiesapp.R
-import com.example.myhobbiesapp.data.dao.UsuarioDAO
-import com.example.myhobbiesapp.sesion.SesionActiva
+import com.example.myhobbiesapp.firebase.FirebaseDb
 import com.example.myhobbiesapp.ui.activity.InicioActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 
 class InicioFragment : Fragment(R.layout.fragment_inicio) {
 
@@ -18,26 +18,22 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val tvSaludo    = view.findViewById<TextView>(R.id.tvSaludo)
+        val tvSaludo = view.findViewById<TextView>(R.id.tvSaludo)
         val btnTutorial = view.findViewById<View>(R.id.btnVerTutorial)
 
-        // Saludo
-        var nombre = activity?.intent?.getStringExtra("nombreUsuario").orEmpty()
-        if (nombre.isBlank()) {
-            val idUsuario = activity?.intent?.getIntExtra("idUsuario", -1) ?: -1
-            if (idUsuario != -1) {
-                UsuarioDAO(requireContext()).getById(idUsuario)?.let { u -> nombre = u.nombre }
-            } else if (SesionActiva.usuarioActual != null) {
-                nombre = SesionActiva.usuarioActual?.nombre ?: ""
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            FirebaseDb.getUserProfile(uid) { profile ->
+                if (isAdded) {
+                    val nombre = profile?.nombre?.ifBlank { "Usuario" } ?: "Usuario"
+                    tvSaludo.text = "Bienvenid@, $nombre a MyHobbiesApp"
+                }
             }
+        } else {
+            tvSaludo.text = "Bienvenid@ a MyHobbiesApp"
         }
-        tvSaludo.text = if (nombre.isNotBlank())
-            "Bienvenid@, $nombre a MyHobbiesApp"
-        else
-            "Bienvenid@ a MyHobbiesApp"
 
-        // Mostrar diálogo para iniciar tour solo la 1ª vez
+
         if (!prefs().getBoolean("tutorial_inicio_visto", false)) {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Tutorial rápido")
@@ -49,13 +45,12 @@ class InicioFragment : Fragment(R.layout.fragment_inicio) {
                     prefs().edit().putBoolean("tutorial_inicio_visto", true).apply()
                     d.dismiss()
                 }
+                .setCancelable(false)
                 .show()
         }
-
 
         btnTutorial.setOnClickListener {
             (requireActivity() as? InicioActivity)?.launchOnboardingTour()
         }
-
     }
 }

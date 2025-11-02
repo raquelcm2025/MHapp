@@ -6,51 +6,69 @@ import com.example.myhobbiesapp.data.database.AppDatabaseHelper
 import com.example.myhobbiesapp.data.entity.FotoLocal
 
 class FotoLocalDAO(context: Context) {
-    private val dbh = AppDatabaseHelper(context)
+    private val dbHelper = AppDatabaseHelper(context)
 
     fun insert(f: FotoLocal): Long {
-        val db = dbh.writableDatabase
+        val db = dbHelper.writableDatabase
         val v = ContentValues().apply {
             put("user_id", f.userId)
             put("uri", f.uri)
-            put("created_at", f.createdAt)
         }
         val id = db.insert("foto_local", null, v)
         db.close()
         return id
     }
 
-    fun listByUser(userId: Int): List<FotoLocal> {
-        val db = dbh.readableDatabase
+    /**
+     * Lista fotos por el UID de Firebase
+     */
+    fun listByUser(userId: String): List<FotoLocal> {
+        val db = dbHelper.readableDatabase
         val out = mutableListOf<FotoLocal>()
-        db.rawQuery(
-            "SELECT id, user_id, uri, created_at FROM foto_local WHERE user_id=? ORDER BY created_at DESC",
-            arrayOf(userId.toString())
-        ).use { c ->
-            if (c.moveToFirst()) {
-                do {
-                    out.add(
-                        FotoLocal(
-                            id = c.getInt(0),
-                            userId = c.getInt(1),
-                            uri = c.getString(2),
-                            createdAt = c.getLong(3)
-                        )
-                    )
-                } while (c.moveToNext())
+        val c = db.rawQuery(
+            "SELECT id, user_id, uri FROM foto_local WHERE user_id = ? ORDER BY created_at DESC",
+            arrayOf(userId)
+        )
+        c.use {
+            while (it.moveToNext()) {
+                out.add(FotoLocal(id = it.getInt(0), userId = it.getString(1), uri = it.getString(2)))
             }
         }
         db.close()
         return out
     }
 
-    fun topNByUser(userId: Int, n: Int): List<FotoLocal> =
-        listByUser(userId).take(n)
-
-    fun delete(id: Int): Int {
-        val db = dbh.writableDatabase
-        val rows = db.delete("foto_local", "id=?", arrayOf(id.toString()))
+    /**
+     * Cuenta fotos por el UID de Firebase
+     */
+    fun countByUser(userId: String): Int {
+        val db = dbHelper.readableDatabase
+        // ¡CAMBIO CLAVE!
+        val c = db.rawQuery("SELECT COUNT(*) FROM foto_local WHERE user_id = ?", arrayOf(userId))
+        var n = 0
+        if (c.moveToFirst()) n = c.getInt(0)
+        c.close()
         db.close()
-        return rows
+        return n
+    }
+
+    /**
+     * Lista las 3 más recientes por UID de Firebase
+     */
+    fun listByUserLimit(userId: String, limit: Int = 3): List<FotoLocal> {
+        val db = dbHelper.readableDatabase
+        val out = mutableListOf<FotoLocal>()
+        // ¡CAMBIO CLAVE!
+        val c = db.rawQuery(
+            "SELECT id, user_id, uri FROM foto_local WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+            arrayOf(userId, limit.toString())
+        )
+        c.use {
+            while (it.moveToNext()) {
+                out.add(FotoLocal(id = it.getInt(0), userId = it.getString(1), uri = it.getString(2)))
+            }
+        }
+        db.close()
+        return out
     }
 }

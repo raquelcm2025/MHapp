@@ -1,54 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@color/blanco"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="8dp">
-
-    <TextView
-        android:id="@+id/tvTituloChat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chat"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/magenta_claro"
-        android:gravity="center"
-        android:padding="8dp" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMensajes"
+        android:id="@+id/rvChat"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="4dp" />
+        android:layout_height="0dp" android:layout_weight="1"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="4dp">
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="8dp">
 
         <EditText
             android:id="@+id/etMensaje"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Escribe un mensaje..."
-            android:background="@android:drawable/editbox_background"
-            android:padding="8dp" />
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:hint="Escribe un mensaje"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/btnEnviar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enviar"
-            android:layout_marginStart="6dp"
-            android:backgroundTint="@color/magenta_claro"
-            android:textColor="@android:color/white" />
+            android:layout_width="40dp" android:layout_height="40dp"
+            android:src="@android:drawable/ic_dialog_email"
+            android:contentDescription="Enviar"/>
     </LinearLayout>
 </LinearLayout>
-

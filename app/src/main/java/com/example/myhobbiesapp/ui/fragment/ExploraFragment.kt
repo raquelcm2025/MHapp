@@ -1,81 +1,117 @@
 package com.example.myhobbiesapp.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myhobbiesapp.adapter.PerfilesAdapter
-import com.example.myhobbiesapp.data.dao.UsuarioDAO
-import com.example.myhobbiesapp.databinding.FragmentExploraBinding
+import androidx.recyclerview.widget.RecyclerView
+import com.example.myhobbiesapp.R
+import com.example.myhobbiesapp.adapter.UsuarioAdapter
+import com.example.myhobbiesapp.adapter.UsuarioItem
 import com.example.myhobbiesapp.ui.dialog.DialogOpcionesExplora
-import com.example.myhobbiesapp.ui.dialog.DialogPerfilExplora
-import com.example.myhobbiesapp.util.CurrentUser
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class ExploraFragment : Fragment() {
+class ExploraFragment : Fragment(R.layout.fragment_explora) {
 
-    private var _binding: FragmentExploraBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var rv: RecyclerView
+    private lateinit var tvEmpty: TextView
+    private val adapter by lazy { UsuarioAdapter(::onVerMas) }
 
-    private val adapter by lazy {
-        PerfilesAdapter(
-            onClickItem = { u ->
-                val myId = CurrentUser.idFromSession(requireContext())
-                if (myId != null && u.id == myId) return@PerfilesAdapter
-                // Primero: opciones
-                DialogOpcionesExplora.newInstance(u.id)
-                    .show(parentFragmentManager, "opciones_explora")
-            },
-            onClickAcciones = { u ->
-                // También desde el botón de acciones
-                val myId = CurrentUser.idFromSession(requireContext())
-                if (myId != null && u.id == myId) return@PerfilesAdapter
-                DialogOpcionesExplora.newInstance(u.id)
-                    .show(parentFragmentManager, "opciones_explora")
-            }
-        )
+    private var userIndexListener: ValueEventListener? = null
+    private var userIndexRef: DatabaseReference? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        rv = view.findViewById(R.id.rvPerfiles)
+        tvEmpty = view.findViewById(R.id.tvVacioExplora)
+
+        rv.layoutManager = LinearLayoutManager(requireContext())
+        rv.adapter = adapter
+
+        cargarPerfilesDeFirebase()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View {
-        _binding = FragmentExploraBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(v: View, s: Bundle?) {
-        binding.rvPerfiles.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvPerfiles.adapter = adapter
-
-        parentFragmentManager.setFragmentResultListener(
-            DialogOpcionesExplora.RESULT_KEY,
-            viewLifecycleOwner
-        ) { _, result ->
-            val accion = result.getString("accion")
-            val userId = result.getInt("userId", -1)
-            if (userId <= 0) return@setFragmentResultListener
-
-            when (accion) {
-                "ver_perfil" -> {
-                    DialogPerfilExplora.newInstance(userId)
-                        .show(parentFragmentManager, "perfil_explora")
-                }
-                "conectar" -> {
-                    //  luego se conectas a una API de amistad
-                     Toast.makeText(requireContext(), "Solicitud enviada", Toast.LENGTH_SHORT).show()
-                }
-            }
+    private fun cargarPerfilesDeFirebase() {
+        val myUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (myUid == null) {
+            tvEmpty.text = "No se pudo cargar (sin sesión)"
+            tvEmpty.visibility = View.VISIBLE
+            rv.visibility = View.GONE
+            return
         }
 
-        // Carga de usuarios (excluye al actual)
-        val idYo = CurrentUser.idFromSession(requireContext())
-        val dao = UsuarioDAO(requireContext())
-        val lista = dao.getAll().let { l -> if (idYo != null) l.filter { it.id != idYo } else l }
-        adapter.submitList(lista)
+        userIndexListener?.let { userIndexRef?.removeEventListener(it) }
+
+        val ref = FirebaseDatabase.getInstance().getReference("userIndex")
+        userIndexRef = ref
+
+        userIndexListener = ref.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded) return
+
+                val listaDeUsuarios = mutableListOf<UsuarioItem>()
+
+                snapshot.children.forEach { userSnapshot ->
+                    val uid = userSnapshot.key
+
+                    if (uid != null && uid != myUid) {
+
+
+                        val nombre = userSnapshot.child("nombre").getValue(String::class.java) ?: ""
+                        val apPaterno = userSnapshot.child("apellidoPaterno").getValue(String::class.java) ?: ""
+                        val correo = userSnapshot.child("correo").getValue(String::class.java) ?: ""
+
+                        if (correo.isNotEmpty()) {
+                            listaDeUsuarios.add(
+                                UsuarioItem(
+                                    uid = uid,
+                                    nombre = "$nombre $apPaterno".trim(),
+                                    correo = correo
+                                )
+                            )
+                        }
+                    }
+                }
+
+                adapter.submitList(listaDeUsuarios)
+
+                if (listaDeUsuarios.isEmpty()) {
+                    tvEmpty.text = "Aún no hay otros usuarios"
+                    tvEmpty.visibility = View.VISIBLE
+                    rv.visibility = View.GONE
+                } else {
+                    tvEmpty.visibility = View.GONE
+                    rv.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (!isAdded) return
+                tvEmpty.text = "Error al cargar usuarios"
+                tvEmpty.visibility = View.VISIBLE
+                rv.visibility = View.GONE
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun onVerMas(uid: String) {
+        DialogOpcionesExplora.newInstance(uid)
+            .show(parentFragmentManager, "dialog_opciones_explora")
     }
 
     override fun onDestroyView() {
-        _binding = null
+        userIndexListener?.let { userIndexRef?.removeEventListener(it) }
+        userIndexListener = null
+        userIndexRef = null
         super.onDestroyView()
     }
 }

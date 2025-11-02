@@ -1,10 +1,18 @@
 package com.example.myhobbiesapp.ui.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.ExistingWorkPolicy
+import com.example.myhobbiesapp.workers.AtencionUsuarioWorker
+import java.util.concurrent.TimeUnit
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -17,8 +25,8 @@ import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.example.myhobbiesapp.util.SessionManager
 
 class InicioActivity : AppCompatActivity() {
 
@@ -28,16 +36,14 @@ class InicioActivity : AppCompatActivity() {
     private val MH_CELESTE = 0xFFCDE8FF.toInt()
     private val MH_TEXT    = 0xFF222222.toInt()
 
-    // Snackbar del tour (para "Cancelar")
     private var tourSnack: Snackbar? = null
-
-    // ========= AÑADIDO: THREAD DEL TOUR =========
     private var tourThread: Thread? = null
     @Volatile private var tourRunning: Boolean = false
-    // ============================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!ensureSessionOrGoLogin()) return
+
         binding = ActivityInicioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -48,7 +54,6 @@ class InicioActivity : AppCompatActivity() {
             title = getString(R.string.menu_home)
         }
 
-        // menú lateral
         val toggle = ActionBarDrawerToggle(
             this, binding.drawerLayout, binding.toolbar,
             R.string.nav_open, R.string.nav_close
@@ -56,20 +61,27 @@ class InicioActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+
         binding.navView.setNavigationItemSelectedListener { item ->
-            val handled = when (item.itemId) {
-                R.id.menu_home    -> { showFragment(InicioFragment(),  "inicio");  true }
-                R.id.menu_explora -> { showFragment(ExploraFragment(), "explora"); true }
-                R.id.menu_chats   -> { showFragment(ChatsFragment(),   "chats");   true }
-                R.id.menu_perfil  -> { showFragment(PerfilFragment(),  "perfil");  true }
-                else -> false
-            }
-            if (handled) {
+            binding.drawerLayout.closeDrawers()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+
                 item.isChecked = true
-                binding.drawerLayout.closeDrawers()
-            }
-            handled
+
+                // Navegamos al fragmento
+                when (item.itemId) {
+                    R.id.menu_home    -> showFragment(InicioFragment(),  "inicio")
+                    R.id.menu_explora -> showFragment(ExploraFragment(), "explora")
+                    R.id.menu_chats   -> showFragment(ChatFragment(),   "chats")
+                    R.id.menu_solicitudes -> showFragment(SolicitudesFragment(), "solicitudes")
+                    R.id.menu_perfil  -> showFragment(PerfilFragment(),  "perfil")
+                }
+            }, 250) // 250ms de espera
+
+            return@setNavigationItemSelectedListener true
         }
+        // --- FIN DE LA ACTUALIZACIÓN ---
 
         if (savedInstanceState == null) {
             binding.navView.setCheckedItem(R.id.menu_home)
@@ -81,7 +93,6 @@ class InicioActivity : AppCompatActivity() {
                 if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                 } else if (tourRunning) {
-                    // AÑADIDO: cancelar si tour activo
                     cancelTourThread()
                 } else {
                     finishAfterTransition()
@@ -89,7 +100,6 @@ class InicioActivity : AppCompatActivity() {
             }
         })
 
-        // Lanza automáticamente solo la 1ª vez
         if (!prefs().getBoolean("tutorial_inicio_visto", false)) {
             launchOnboardingTour()
         }
@@ -111,6 +121,7 @@ class InicioActivity : AppCompatActivity() {
             "inicio"  -> getString(R.string.menu_home)
             "explora" -> getString(R.string.menu_explora)
             "chats"   -> getString(R.string.menu_chats)
+            "solicitudes" -> getString(R.string.menu_solicitudes)
             "perfil"  -> getString(R.string.menu_perfil)
             else      -> getString(R.string.app_name)
         }
@@ -119,18 +130,17 @@ class InicioActivity : AppCompatActivity() {
     private fun prefs() =
         getSharedPreferences("mh_prefs", Context.MODE_PRIVATE)
 
-    /** ===== TOUR controlado desde la Activity (bloquea/abre Drawer) ===== */
+    // lógica de TOUR
     fun launchOnboardingTour() {
         val drawer  = binding.drawerLayout
         val nav     = binding.navView
         val toolbar = binding.toolbar
 
-        // helpers
         fun Int.dp() = (this * resources.displayMetrics.density).toInt()
         fun View.asRectInWindow(): Rect {
             val p = IntArray(2)
             getLocationInWindow(p)
-            return Rect(p[0], p[1], p[0] + width, p[1] + height)
+            return Rect(p[0], p.component2(), p[0] + width, p.component2() + height)
         }
         fun navIconRect(tb: View): Rect {
             val r = tb.asRectInWindow()
@@ -144,20 +154,13 @@ class InicioActivity : AppCompatActivity() {
             .setTitle("Tour rápido")
             .setMessage("Te mostramos las secciones clave. Toca el círculo para avanzar o usa “Cancelar”.")
             .setPositiveButton("Empezar") { _, _ ->
-                // bloquea gestos mientras corre el tour
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
-                // === AÑADIDO: snackbar reutilizable con cancelación del THREAD ===
                 showTourCancelSnack {
-                    // cancelar tour “de fondo” y liberar UI
                     cancelTourThread()
                     drawer.closeDrawers()
                     drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 }
-                // === AÑADIDO: comienza proceso en background mientras el usuario hace el tour visual ===
                 startTourThread()
-
-                // Espera a que el toolbar esté medido
                 toolbar.post {
                     val paso1 = try {
                         TapTarget.forToolbarNavigationIcon(
@@ -188,7 +191,6 @@ class InicioActivity : AppCompatActivity() {
                         object : TapTargetView.Listener() {
                             override fun onTargetClick(view: TapTargetView) {
                                 super.onTargetClick(view)
-                                // abrir y BLOQUEAR drawer abierto
                                 drawer.openDrawer(GravityCompat.START)
                                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
 
@@ -228,16 +230,17 @@ class InicioActivity : AppCompatActivity() {
                                         }
                                     }
 
-                                    val t2 = itemTarget(R.id.menu_home,    "Inicio",   "Pantalla de bienvenida y tutorial.",            2)
-                                    val t3 = itemTarget(R.id.menu_explora, "Explora",  "Descubre perfiles con hobbies en común.",       3)
-                                    val t4 = itemTarget(R.id.menu_chats,   "Chats",    "Conversa y comparte intereses en tiempo real.", 4)
-                                    val t5 = itemTarget(R.id.menu_perfil,  "Mi Perfil","Edita tu celular y contraseña cuando quieras.", 5)
+                                    val t2 = itemTarget(R.id.menu_home,    "Inicio",   "Pantalla de bienvenida y tutorial.", 2)
+                                    val t3 = itemTarget(R.id.menu_explora, "Explora",  "Descubre perfiles con hobbies.", 3)
+                                    val t4 = itemTarget(R.id.menu_solicitudes, "Solicitudes", "Acepta amigos aquí.", 4)
+                                    val t5 = itemTarget(R.id.menu_chats,   "Chats",    "Conversa con tus amigos.", 5)
+                                    val t6 = itemTarget(R.id.menu_perfil,  "Mi Perfil","Edita tu perfil y hobbies.", 6)
+
 
                                     TapTargetSequence(this@InicioActivity)
-                                        .targets(t2, t3, t4, t5)
+                                        .targets(t2, t3, t4, t5, t6) // <-- Asegúrate de incluir t4
                                         .listener(object : TapTargetSequence.Listener {
                                             override fun onSequenceFinish() {
-                                                // fin: limpiar todo
                                                 tourSnack?.dismiss()
                                                 cancelTourThread()
                                                 drawer.closeDrawers()
@@ -256,7 +259,6 @@ class InicioActivity : AppCompatActivity() {
                                             }
                                             override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {}
                                             override fun onSequenceCanceled(lastTarget: TapTarget?) {
-                                                // cancelado por el usuario (tap fuera o botón)
                                                 tourSnack?.dismiss()
                                                 cancelTourThread()
                                                 drawer.closeDrawers()
@@ -267,7 +269,6 @@ class InicioActivity : AppCompatActivity() {
                                 }, 180)
                             }
                             override fun onTargetCancel(view: TapTargetView?) {
-                                // cancelado el primer paso
                                 tourSnack?.dismiss()
                                 cancelTourThread()
                                 drawer.closeDrawers()
@@ -281,76 +282,6 @@ class InicioActivity : AppCompatActivity() {
             .show()
     }
 
-    /** Secuencia de los ítems del menú (Inicio → Explora → Chats → Mi Perfil) */
-    private fun launchMenuSequence(
-        drawer: DrawerLayout,
-        nav: NavigationView
-    ) {
-        fun targetMenuItem(itemId: Int, title: String, desc: String, stepId: Int): TapTarget {
-            val itemView = nav.findViewById<View>(itemId)
-            return if (itemView != null) {
-                val bounds = rectWithOffsetX(itemView, offsetXDp = -12)
-                TapTarget.forBounds(bounds, title, desc)
-                    .outerCircleColorInt(if (stepId % 2 == 0) MH_CELESTE else MH_LILA)
-                    .targetCircleColorInt(if (stepId % 2 == 0) MH_LILA else MH_CELESTE)
-                    .titleTextColorInt(MH_TEXT)
-                    .descriptionTextColorInt(MH_TEXT)
-                    .drawShadow(true)
-                    .transparentTarget(true)
-                    .cancelable(false)
-                    .id(stepId)
-                    .targetRadius(34)
-            } else {
-                val root = findViewById<View>(R.id.nav_host_fragment)
-                val r = Rect(root.width/4, root.height/3, root.width*3/4, root.height*2/3)
-                TapTarget.forBounds(r, title, desc)
-                    .outerCircleColorInt(MH_CELESTE)
-                    .titleTextColorInt(MH_TEXT)
-                    .descriptionTextColorInt(MH_TEXT)
-                    .drawShadow(true)
-                    .transparentTarget(true)
-                    .cancelable(false)
-                    .id(stepId)
-            }
-        }
-
-        val paso2 = targetMenuItem(R.id.menu_home,    "Inicio",   "Pantalla de bienvenida y tutorial.",            2)
-        val paso3 = targetMenuItem(R.id.menu_explora, "Explora",  "Descubre perfiles con hobbies en común.",       3)
-        val paso4 = targetMenuItem(R.id.menu_chats,   "Chats",    "Conversa y comparte intereses en tiempo real.", 4)
-        val paso5 = targetMenuItem(R.id.menu_perfil,  "Mi Perfil","Edita tu celular y contraseña cuando quieras.", 5)
-
-        TapTargetSequence(this)
-            .targets(paso2, paso3, paso4, paso5)
-            .listener(object : TapTargetSequence.Listener {
-                override fun onSequenceFinish() {
-                    tourSnack?.dismiss()
-                    cancelTourThread()
-                    drawer.closeDrawers()
-                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                    prefs().edit().putBoolean("tutorial_inicio_visto", true).apply()
-
-                    MaterialAlertDialogBuilder(this@InicioActivity)
-                        .setTitle("¡Listo!")
-                        .setMessage("Eso fue todo el tour. ¿Deseas ir a Explora ahora?")
-                        .setPositiveButton("Ir a Explora") { _, _ ->
-                            binding.navView.setCheckedItem(R.id.menu_explora)
-                            showFragment(ExploraFragment(), "explora")
-                        }
-                        .setNegativeButton("Quedarme aquí", null)
-                        .show()
-                }
-                override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) { /* no-op */ }
-                override fun onSequenceCanceled(lastTarget: TapTarget?) {
-                    tourSnack?.dismiss()
-                    cancelTourThread()
-                    drawer.closeDrawers()
-                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                }
-            })
-            .start()
-    }
-
-    /** ===== Helpers ===== */
     private fun View.asRectInWindow(): Rect {
         val loc = IntArray(2)
         getLocationInWindow(loc)
@@ -374,24 +305,17 @@ class InicioActivity : AppCompatActivity() {
         tourSnack?.show()
     }
 
-    // ========= AÑADIDO: IMPLEMENTACIÓN DE THREAD PARA EL “TOUR/PROCESO” =========
     private fun startTourThread() {
         if (tourRunning) return
         tourRunning = true
-
         tourThread = Thread {
             try {
                 val total = 20
                 for (step in 1..total) {
                     if (!tourRunning) break
-                    // Simula trabajo (no bloquea UI)
                     Thread.sleep(350)
-
-                    // Feedback no intrusivo (opcional): actualiza título o muestra snack/Toast
                     runOnUiThread {
-                        // Puedes cambiar esto por actualizar algún TextView o barra en un fragment
                         if (step % 5 == 0) {
-                            // Snackbar ya está; opcionalmente podrías actualizar texto:
                             tourSnack?.setText("Tour en progreso • ${(step * 100) / total}%")
                         }
                     }
@@ -400,11 +324,8 @@ class InicioActivity : AppCompatActivity() {
                 // cancelado
             } finally {
                 runOnUiThread {
-                    // Al terminar o cancelar, limpiar
                     tourRunning = false
                     tourSnack?.dismiss()
-                    // OJO: NO desbloqueamos drawer aquí porque eso lo maneja
-                    // el fin/cancel del TapTargetSequence (para mantener sincronía visual)
                 }
             }
         }.also { it.start() }
@@ -415,5 +336,34 @@ class InicioActivity : AppCompatActivity() {
         tourThread?.interrupt()
         tourThread = null
         tourSnack?.dismiss()
+    }
+
+    private fun ensureSessionOrGoLogin(): Boolean {
+        val email = SessionManager.getCurrentEmail(this)
+        return if (email.isNullOrBlank()) {
+            startActivity(
+                Intent(this, AccesoActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            )
+            false
+        } else {
+            true
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (tourRunning) return
+
+        val workRequest = OneTimeWorkRequest.Builder(AtencionUsuarioWorker::class.java)
+            .setInitialDelay(2, TimeUnit.MINUTES)
+            .addTag("come-back-work")
+            .build()
+
+        WorkManager.getInstance(this).enqueueUniqueWork(
+            "come-back-work",
+            ExistingWorkPolicy.REPLACE,
+            workRequest
+        )
     }
 }
